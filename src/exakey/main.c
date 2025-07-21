@@ -10,6 +10,9 @@
 
 #include <stdbool.h>
 
+#include <avr/io.h>
+#include <util/delay.h>
+
 /* -- Procedures -- */
 
 /**
@@ -18,7 +21,14 @@
  */
 int main( void )
 {
-    // Do nothing, forever
-    while( true );
+    DDRB |= ( 1 << DDB5 );
+
+    while( true )
+    {
+        PORTB |= ( 1 << PORTB5 );
+        _delay_ms( 25 );
+        PORTB &= ~( 1 << PORTB5 );
+        _delay_ms( 25 );
+    }
 
 } /* main() */
