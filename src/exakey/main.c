@@ -13,6 +13,8 @@
 #include <avr/io.h>
 #include <util/delay.h>
 
+#include "bit_ops.h"
+
 /* -- Procedures -- */
 
 /**
@@ -21,14 +23,14 @@
  */
 int main( void )
 {
-    DDRB |= ( 1 << DDB5 );
+    set_bit( DDRB, DDB5 );
 
     while( true )
     {
-        PORTB |= ( 1 << PORTB5 );
+        set_bit( PORTB, PORTB5 );
         _delay_ms( 25 );
-        PORTB &= ~( 1 << PORTB5 );
-        _delay_ms( 25 );
+        clear_bit( PORTB, PORTB5 );
+        _delay_ms( 975 );
     }
 
 } /* main() */
