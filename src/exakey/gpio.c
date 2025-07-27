@@ -15,6 +15,7 @@
 #include "bit_ops.h"
 #include "gpio.h"
 #include "pinout.h"
+#include "util.h"
 
 /* -- Macros -- */
 
@@ -71,10 +72,30 @@ s_gpio_tbl[] =
 };
 
 // Ensure GPIO table has an entry for every defined pin
-_Static_assert( sizeof( s_gpio_tbl ) / sizeof( s_gpio_tbl[ 0 ] ) == GPIO_PIN_COUNT,
-                "s_gpio_tbl must have correct number of entries!" );
+_Static_assert( array_count( s_gpio_tbl ) == GPIO_PIN_COUNT, "s_gpio_tbl must have correct number of entries!" );
 
 /* -- Procedures -- */
+
+void gpio_configure( gpio_pin_t pin, gpio_cfg_t const* cfg )
+{
+    validate_pin( pin );
+    validate_dir( cfg->dir );
+
+    // Set direction
+    assign_bitmask( *s_gpio_tbl[ pin ].ddr_reg,
+                     s_gpio_tbl[ pin ].ddr_mask,
+                     cfg->dir );
+
+    // If direction is output, set pull-up
+    if( cfg->dir == GPIO_DIR_IN )
+    {
+        assign_bitmask( *s_gpio_tbl[ pin ].out_reg,
+                         s_gpio_tbl[ pin ].out_mask,
+                         cfg->pullup_en );
+    }
+
+} /* gpio_configure() */
+
 
 void gpio_set_dir( gpio_pin_t pin, gpio_dir_t dir )
 {

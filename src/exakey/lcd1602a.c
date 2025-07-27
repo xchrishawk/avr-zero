@@ -14,6 +14,7 @@
 #include "adc.h"
 #include "gpio.h"
 #include "lcd1602a.h"
+#include "util.h"
 
 /* -- Types -- */
 
@@ -46,6 +47,10 @@ enum
 #define BUTTON_DOWN_MAX_INPUT       333
 #define BUTTON_LEFT_MAX_INPUT       525
 #define BUTTON_SELECT_MAX_INPUT     832
+
+// Array of all pins
+static const gpio_pin_t ALL_PINS[] = { LCD_D4, LCD_D5, LCD_D6, LCD_D7, LCD_RS, LCD_E };
+static const uint8_t ALL_PINS_COUNT = array_count( ALL_PINS );
 
 /* -- Macros -- */
 
@@ -143,15 +148,15 @@ void lcd1602a_clear( void )
 lcd1602a_button_t lcd1602a_get_button( void )
 {
     uint16_t sample = adc_read();
-    if( sample < 45 )
+    if( sample < BUTTON_RIGHT_MAX_INPUT )
         return LCD1602A_BUTTON_RIGHT;
-    else if( sample < 178 )
+    else if( sample < BUTTON_UP_MAX_INPUT )
         return LCD1602A_BUTTON_UP;
-    else if( sample < 333 )
+    else if( sample < BUTTON_DOWN_MAX_INPUT )
         return LCD1602A_BUTTON_DOWN;
-    else if( sample < 525 )
+    else if( sample < BUTTON_LEFT_MAX_INPUT )
         return LCD1602A_BUTTON_LEFT;
-    else if( sample < 832 )
+    else if( sample < BUTTON_SELECT_MAX_INPUT )
         return LCD1602A_BUTTON_SELECT;
     else
         return LCD1602A_BUTTON_NONE;
@@ -161,21 +166,13 @@ lcd1602a_button_t lcd1602a_get_button( void )
 
 void lcd1602a_init( void )
 {
-    // Set GPIO directions for all relevant pins
-    gpio_set_dir( LCD_D4, GPIO_DIR_OUT );
-    gpio_set_dir( LCD_D5, GPIO_DIR_OUT );
-    gpio_set_dir( LCD_D6, GPIO_DIR_OUT );
-    gpio_set_dir( LCD_D7, GPIO_DIR_OUT );
-    gpio_set_dir( LCD_RS, GPIO_DIR_OUT );
-    gpio_set_dir( LCD_E,  GPIO_DIR_OUT );
-
-    // Initialize pin states
-    gpio_set_state( LCD_D4, GPIO_STATE_LOW );
-    gpio_set_state( LCD_D5, GPIO_STATE_LOW );
-    gpio_set_state( LCD_D6, GPIO_STATE_LOW );
-    gpio_set_state( LCD_D7, GPIO_STATE_LOW );
-    gpio_set_state( LCD_RS, GPIO_STATE_LOW );
-    gpio_set_state( LCD_E,  GPIO_STATE_LOW );
+    // Set configuration and initial state for all GPIO pins
+    gpio_cfg_t const cfg = { GPIO_DIR_OUT, false };
+    for( uint8_t idx = 0; idx < ALL_PINS_COUNT; idx++ )
+    {
+        gpio_configure( ALL_PINS[ idx ], &cfg );
+        gpio_set_state( ALL_PINS[ idx ], GPIO_STATE_LOW );
+    }
 
     // Initialize ADC if it's not already initialized
     adc_init();

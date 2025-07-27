@@ -77,13 +77,23 @@ enum
     GPIO_STATE_COUNT,               /**< Number of valid pin states.                    */
 };
 
+/**
+ * @struct  gpio_cfg_t
+ * @brief   Struct representing the configuration for a GPIO pin.
+ */
+typedef struct
+{
+    gpio_dir_t      dir;            /**< The pin's I/O direction.                       */
+    bool            pullup_en;      /**< If set to `true`, pull-up resistor is enabled. */
+} gpio_cfg_t;
+
 /* -- Procedure Prototypes -- */
 
 /**
- * @fn      gpio_set_dir( gpio_pin_t, gpio_dir_t )
- * @brief   Sets the I/O direction (in or out) of the specified GPIO pin.
+ * @fn      gpio_configure( gpio_pin_t, gpio_cfg_t const* )
+ * @brief   Sets the configuration of the specified GPIO pin.
  */
-void gpio_set_dir( gpio_pin_t pin, gpio_dir_t dir );
+void gpio_configure( gpio_pin_t pin, gpio_cfg_t const* cfg );
 
 /**
  * @fn      gpio_get_state( gpio_pin_t )
