@@ -11,10 +11,11 @@
 #include <util/delay.h>
 #include <util/delay_basic.h>
 
-#include "adc.h"
-#include "gpio.h"
+#include "adc/adc.h"
+#include "gpio/gpio.h"
+#include "utility/utility.h"
+
 #include "lcd1602a.h"
-#include "util.h"
 
 /* -- Types -- */
 

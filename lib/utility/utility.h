@@ -1,13 +1,13 @@
 /**
- * @file    util.h
+ * @file    utility.h
  * @brief   Header defining miscellaneous utilities.
  *
  * @author  Chris Vig (chris@invictus.so)
  * @date    2025-07-27
  */
 
-#if !defined( UTIL_H )
-#define UTIL_H
+#if !defined( UTILITY_H )
+#define UTILITY_H
 
 /* -- Macros -- */
 
@@ -18,4 +18,4 @@
 #define array_count( _a )                                                       \
     ( sizeof( _a ) / sizeof( _a[ 0 ] ) )
 
-#endif /* !defined( UTIL_H ) */
+#endif /* !defined( UTILITY_H ) */

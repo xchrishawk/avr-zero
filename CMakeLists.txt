@@ -43,7 +43,7 @@ project(avr-zero LANGUAGES C CXX ASM)
 
 # Set up project directories
 set(PROJECT_BASE_DIR        ${CMAKE_CURRENT_SOURCE_DIR})
-set(PROJECT_LIB_DIR         ${PROJECT_BASE_DIR}/lib)
+set(PROJECT_LIBRARY_DIR     ${PROJECT_BASE_DIR}/lib)
 set(PROJECT_EXECUTABLE_DIR  ${PROJECT_BASE_DIR}/src)
 set(PROJECT_BUILD_DIR       ${CMAKE_CURRENT_BINARY_DIR})
 set(PROJECT_BIN_DIR         ${PROJECT_BUILD_DIR})
@@ -68,6 +68,12 @@ add_compile_definitions(
 )
 
 # -- Subdirectories --
+
+# Libraries
+add_subdirectory(${PROJECT_LIBRARY_DIR}/adc)
+add_subdirectory(${PROJECT_LIBRARY_DIR}/gpio)
+add_subdirectory(${PROJECT_LIBRARY_DIR}/lcd1602a)
+add_subdirectory(${PROJECT_LIBRARY_DIR}/utility)
 
 # Executables
 add_subdirectory(${PROJECT_EXECUTABLE_DIR}/exakey)

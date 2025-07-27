@@ -9,6 +9,10 @@
 #if !defined( LCD1602A_H )
 #define LCD1602A_H
 
+/* -- Includes -- */
+
+#include <stdint.h>
+
 /* -- Constants -- */
 
 /**

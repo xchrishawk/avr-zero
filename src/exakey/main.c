@@ -15,8 +15,7 @@
 #include <avr/io.h>
 #include <util/delay.h>
 
-#include "bit_ops.h"
-#include "lcd1602a.h"
+#include "lcd1602a/lcd1602a.h"
 
 /* -- Procedures -- */
 

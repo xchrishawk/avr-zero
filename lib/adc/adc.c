@@ -13,8 +13,9 @@
 
 #include <avr/io.h>
 
+#include "utility/bit_ops.h"
+
 #include "adc.h"
-#include "bit_ops.h"
 
 /* -- Procedures -- */
 
