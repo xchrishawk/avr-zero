@@ -11,7 +11,7 @@ cmake_minimum_required(VERSION 3.22)
 # -- Image Configuration --
 
 set(EXECUTABLE_NAME     exakey)
-set(EXECUTABLE_SOURCE   gpio.c lcd1602a.c main.c)
+set(EXECUTABLE_SOURCE   adc.c gpio.c lcd1602a.c main.c)
 
 # -- Set Up Project --
 
