@@ -15,7 +15,6 @@
 #include <avr/io.h>
 #include <util/delay.h>
 
-#include "adc.h"
 #include "bit_ops.h"
 #include "lcd1602a.h"
 
@@ -31,37 +30,36 @@ int main( void )
     _delay_ms( 500 );
 
     // Initialize systems
-    adc_init();
     lcd1602a_init();
 
-    // Set voltage reference selection to AVcc and channel to A0
-    adc_set_vref( ADC_VREF_AVCC );
-    adc_set_channel( ADC_CHANNEL_A0 );
-
-    // Enable the ADC
-    adc_set_enabled( true );
-
-    uint16_t count = 0;
-    uint16_t result;
-    char line1[ 6 ];
-    char line2[ 6 ];
-
-    lcd1602a_write_lines( "Convert ", NULL );
+    lcd1602a_write_lines( "Button:", NULL );
 
     while( true )
     {
         // Get value
-        result = adc_read();
-
-        // Print result to string
-        sprintf( line1, "%-5u", count++ );
-        sprintf( line2, "%-4u", result );
-
-        // Update LCD
-        lcd1602a_set_address( LCD1602A_ADDRESS_FIRST_LINE + 8 );
-        lcd1602a_write_string( line1 );
+        lcd1602a_button_t button = lcd1602a_get_button();
         lcd1602a_set_address( LCD1602A_ADDRESS_SECOND_LINE );
-        lcd1602a_write_string( line2 );
+        switch( button )
+        {
+        case LCD1602A_BUTTON_NONE:
+            lcd1602a_write_string( "None  " );
+            break;
+        case LCD1602A_BUTTON_UP:
+            lcd1602a_write_string( "Up    " );
+            break;
+        case LCD1602A_BUTTON_DOWN:
+            lcd1602a_write_string( "Down  " );
+            break;
+        case LCD1602A_BUTTON_LEFT:
+            lcd1602a_write_string( "Left  " );
+            break;
+        case LCD1602A_BUTTON_RIGHT:
+            lcd1602a_write_string( "Right " );
+            break;
+        case LCD1602A_BUTTON_SELECT:
+            lcd1602a_write_string( "Select" );
+            break;
+        }
     }
 
 } /* main() */

@@ -11,6 +11,7 @@
 #include <util/delay.h>
 #include <util/delay_basic.h>
 
+#include "adc.h"
 #include "gpio.h"
 #include "lcd1602a.h"
 
@@ -27,9 +28,9 @@ enum
 /* -- Constants -- */
 
 // Delays
-#define DELAY_PULSE_ENABLE_LOOPS    ( 1 )
-#define DELAY_SHORT_US              ( 50 )
-#define DELAY_LONG_MS               ( 2 )
+#define DELAY_PULSE_ENABLE_LOOPS    1
+#define DELAY_SHORT_US              50
+#define DELAY_LONG_MS               2
 
 // GPIO aliases for LCD pins
 #define LCD_D4                      GPIO_PIN_ARDUINO_D4
@@ -38,6 +39,13 @@ enum
 #define LCD_D7                      GPIO_PIN_ARDUINO_D7
 #define LCD_RS                      GPIO_PIN_ARDUINO_D8
 #define LCD_E                       GPIO_PIN_ARDUINO_D9
+
+// Maximum ADC readings for the buttons
+#define BUTTON_RIGHT_MAX_INPUT      45
+#define BUTTON_UP_MAX_INPUT         178
+#define BUTTON_DOWN_MAX_INPUT       333
+#define BUTTON_LEFT_MAX_INPUT       525
+#define BUTTON_SELECT_MAX_INPUT     832
 
 /* -- Macros -- */
 
@@ -132,6 +140,25 @@ void lcd1602a_clear( void )
 } /* lcd1602a_clear() */
 
 
+lcd1602a_button_t lcd1602a_get_button( void )
+{
+    uint16_t sample = adc_read();
+    if( sample < 45 )
+        return LCD1602A_BUTTON_RIGHT;
+    else if( sample < 178 )
+        return LCD1602A_BUTTON_UP;
+    else if( sample < 333 )
+        return LCD1602A_BUTTON_DOWN;
+    else if( sample < 525 )
+        return LCD1602A_BUTTON_LEFT;
+    else if( sample < 832 )
+        return LCD1602A_BUTTON_SELECT;
+    else
+        return LCD1602A_BUTTON_NONE;
+
+} /* lcd1602a_get_button() */
+
+
 void lcd1602a_init( void )
 {
     // Set GPIO directions for all relevant pins
@@ -149,6 +176,14 @@ void lcd1602a_init( void )
     gpio_set_state( LCD_D7, GPIO_STATE_LOW );
     gpio_set_state( LCD_RS, GPIO_STATE_LOW );
     gpio_set_state( LCD_E,  GPIO_STATE_LOW );
+
+    // Initialize ADC if it's not already initialized
+    adc_init();
+
+    // Configure ADC to receive voltages from push buttons
+    adc_set_vref( ADC_VREF_AVCC );
+    adc_set_channel( ADC_CHANNEL_A0 );
+    adc_set_enabled( true );
 
     // Send initialization commands
     send_function_set( true, false );

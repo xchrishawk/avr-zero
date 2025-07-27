@@ -23,6 +23,24 @@
  */
 #define LCD1602A_ADDRESS_SECOND_LINE    ( 0x40 )
 
+/* -- Types -- */
+
+/**
+ * @typedef lcd1602a_button_t
+ * @brief   Enumeration of buttons supported by the LCD1602A shield.
+ */
+typedef uint8_t lcd1602a_button_t;
+enum
+{
+    LCD1602A_BUTTON_NONE,           /**< No button is selected.                         */
+    LCD1602A_BUTTON_UP,             /**< The UP button is selected.                     */
+    LCD1602A_BUTTON_DOWN,           /**< The DOWN button is selected.                   */
+    LCD1602A_BUTTON_LEFT,           /**< The LEFT button is selected.                   */
+    LCD1602A_BUTTON_RIGHT,          /**< The RIGHT button is selected.                  */
+    LCD1602A_BUTTON_SELECT,         /**< The SELECT button is selected.                 */
+    LCD1602A_BUTTON_COUNT,          /**< Number of valid buttons.                       */
+};
+
 /* -- Procedure Prototypes -- */
 
 /**
@@ -31,6 +49,12 @@
  * @note    This function blocks for ~2 milliseconds.
  */
 void lcd1602a_clear( void );
+
+/**
+ * @fn      lcd1602a_get_button( void )
+ * @brief   Returns the currently pressed button, if any.
+ */
+lcd1602a_button_t lcd1602a_get_button( void );
 
 /**
  * @fn      lcd1602a_home( void )
