@@ -8,6 +8,8 @@
 
 /* -- Includes -- */
 
+#include <string.h>
+
 #include <util/delay.h>
 #include <util/delay_basic.h>
 
@@ -27,6 +29,9 @@ enum
     REGISTER_DATA,
 };
 
+// Convenience typedef for configuration
+typedef lcd1602a_cfg_t const* cfg_p;
+
 /* -- Constants -- */
 
 // Delays
@@ -34,24 +39,12 @@ enum
 #define DELAY_SHORT_US              50
 #define DELAY_LONG_MS               2
 
-// GPIO aliases for LCD pins
-#define LCD_D4                      GPIO_PIN_ARDUINO_D4
-#define LCD_D5                      GPIO_PIN_ARDUINO_D5
-#define LCD_D6                      GPIO_PIN_ARDUINO_D6
-#define LCD_D7                      GPIO_PIN_ARDUINO_D7
-#define LCD_RS                      GPIO_PIN_ARDUINO_D8
-#define LCD_E                       GPIO_PIN_ARDUINO_D9
-
-// Maximum ADC readings for the buttons
+// Maximum ADC readings for the buttons (empirically determined)
 #define BUTTON_RIGHT_MAX_INPUT      45
 #define BUTTON_UP_MAX_INPUT         178
 #define BUTTON_DOWN_MAX_INPUT       333
 #define BUTTON_LEFT_MAX_INPUT       525
 #define BUTTON_SELECT_MAX_INPUT     832
-
-// Array of all pins
-static const gpio_pin_t ALL_PINS[] = { LCD_D4, LCD_D5, LCD_D6, LCD_D7, LCD_RS, LCD_E };
-static const uint8_t ALL_PINS_COUNT = array_count( ALL_PINS );
 
 /* -- Macros -- */
 
@@ -65,13 +58,13 @@ static const uint8_t ALL_PINS_COUNT = array_count( ALL_PINS );
  * @fn      buffer_data_lo( uint8_t )
  * @brief   Sets the data bus to the low 4 bits of the specified byte.
  */
-static void buffer_data_lo( uint8_t data );
+static void buffer_data_lo( cfg_p cfg, uint8_t data );
 
 /**
  * @fn      buffer_data_hi( uint8_t )
  * @brief   Sets the data bus to the high 4 bits of the specified byte.
  */
-static void buffer_data_hi( uint8_t data );
+static void buffer_data_hi( cfg_p cfg, uint8_t data );
 
 /**
  * @fn      delay_long( void )
@@ -86,69 +79,97 @@ static void delay_long( void );
 static void delay_short( void );
 
 /**
- * @fn      pulse_enable( void )
+ * @fn      pulse_enable( cfg_p )
  * @brief   Pulses the ENABLE line to the LCD, writing data.
  */
-static void pulse_enable( void );
+static void pulse_enable( cfg_p cfg );
 
 /**
- * @fn      select_register( register_t )
+ * @fn      select_register( cfg_p, register_t )
  * @brief   Selects the specified register to write to.
  */
-static void select_register( register_t reg );
+static void select_register( cfg_p cfg, register_t reg );
 
 /**
- * @fn      send_byte( uint8_t )
+ * @fn      send_byte( cfg_p, uint8_t )
  * @brief   Sends a full byte to the LCD over the data bus.
  */
-static void send_byte( uint8_t data );
+static void send_byte( cfg_p cfg, uint8_t data );
 
 /**
  * @fn      send_display_set( bool, bool, bool )
  * @brief   Sends the display set command with the specified parameters.
+ * @param   cfg
+ *          Pointer to the LCD configuration struct.
  * @param   display_on
- *          Set to @c true to turn on the entire display.
+ *          Set to `true` to turn on the entire display.
  * @param   cursor_underline_on
- *          Set to @c true to enable the underline cursor.
+ *          Set to `true` to enable the underline cursor.
  * @param   cursor_blink_on
- *          Set to @c true to enable the blinking cursor.
+ *          Set to `true` to enable the blinking cursor.
  */
-static void send_display_set( bool display_on, bool cursor_underline_on, bool cursor_blink_on );
+static void send_display_set( cfg_p cfg, bool display_on, bool cursor_underline_on, bool cursor_blink_on );
 
 /**
  * @fn      send_entry_mode_set( bool, bool )
  * @brief   Sends the entry mode set command with the specified parameters.
+ * @param   cfg
+ *          Pointer to the LCD configuration struct.
  * @param   increment_addr
  *          Set to @c true to increment the address when data is written. Otherwise it will be decremented.
  * @param   auto_shift
  *          Set to @c true to automatically shift the entire display when a new character is entered.
  */
-static void send_entry_mode_set( bool increment_addr, bool auto_shift );
+static void send_entry_mode_set( cfg_p cfg, bool increment_addr, bool auto_shift );
 
 /**
  * @fn      send_function_set( bool, bool )
  * @brief   Sends the function set command with the specified parameters.
+ * @param   cfg
+ *          Pointer to the LCD configuration struct.
  * @param   two_line
  *          Set to @c true to enable two-line display mode.
  * @param   large_font
  *          Set to @c true to enable large (5x11) display mode.
  */
-static void send_function_set( bool two_line, bool large_font );
+static void send_function_set( cfg_p cfg, bool two_line, bool large_font );
 
 /* -- Procedures -- */
 
-void lcd1602a_clear( void )
+void lcd1602a_cfg_default( lcd1602a_cfg_t* cfg )
 {
-    select_register( REGISTER_INSTRUCTION );
-    send_byte( 0x01 );
+    // Clear struct
+    memset( cfg, 0, sizeof( *cfg ) );
+
+    // Assign GPIO pins
+    cfg->d4_pin = GPIO_PIN_ARDUINO_D4;
+    cfg->d5_pin = GPIO_PIN_ARDUINO_D5;
+    cfg->d6_pin = GPIO_PIN_ARDUINO_D6;
+    cfg->d7_pin = GPIO_PIN_ARDUINO_D7;
+    cfg->rs_pin = GPIO_PIN_ARDUINO_D8;
+    cfg->e_pin  = GPIO_PIN_ARDUINO_D9;
+
+    // Assign ADC channels
+    cfg->btn_chnl = ADC_CHANNEL_A0;
+
+} /* lcd1602a_cfg_default() */
+
+
+void lcd1602a_clear( lcd1602a_cfg_t const* cfg )
+{
+    select_register( cfg, REGISTER_INSTRUCTION );
+    send_byte( cfg, 0x01 );
     delay_long();
 
 } /* lcd1602a_clear() */
 
 
-lcd1602a_button_t lcd1602a_get_button( void )
+lcd1602a_button_t lcd1602a_get_button( lcd1602a_cfg_t const* cfg )
 {
+    adc_set_vref( ADC_VREF_AVCC );
+    adc_set_channel( cfg->btn_chnl );
     uint16_t sample = adc_read();
+
     if( sample < BUTTON_RIGHT_MAX_INPUT )
         return LCD1602A_BUTTON_RIGHT;
     else if( sample < BUTTON_UP_MAX_INPUT )
@@ -165,82 +186,104 @@ lcd1602a_button_t lcd1602a_get_button( void )
 } /* lcd1602a_get_button() */
 
 
-void lcd1602a_init( void )
+void lcd1602a_home( lcd1602a_cfg_t const* cfg )
 {
-    // Set configuration and initial state for all GPIO pins
-    gpio_cfg_t const cfg = { GPIO_DIR_OUT, false };
-    for( uint8_t idx = 0; idx < ALL_PINS_COUNT; idx++ )
-    {
-        gpio_configure( ALL_PINS[ idx ], &cfg );
-        gpio_set_state( ALL_PINS[ idx ], GPIO_STATE_LOW );
-    }
+    select_register( cfg, REGISTER_INSTRUCTION );
+    send_byte( cfg, 0x02 );
+    delay_long();
 
-    // Initialize ADC if it's not already initialized
+} /* lcd1602a_home() */
+
+
+void lcd1602a_init( lcd1602a_cfg_t const* cfg )
+{
+    // Set configuration for all GPIO pins
+    gpio_cfg_t const gpio_cfg = { GPIO_DIR_OUT, false };
+    gpio_configure( cfg->d4_pin, &gpio_cfg );
+    gpio_configure( cfg->d5_pin, &gpio_cfg );
+    gpio_configure( cfg->d6_pin, &gpio_cfg );
+    gpio_configure( cfg->d7_pin, &gpio_cfg );
+    gpio_configure( cfg->rs_pin, &gpio_cfg );
+    gpio_configure( cfg->e_pin,  &gpio_cfg );
+
+    // Set initial state for all GPIO pins
+    gpio_set_state( cfg->d4_pin, GPIO_STATE_LOW );
+    gpio_set_state( cfg->d5_pin, GPIO_STATE_LOW );
+    gpio_set_state( cfg->d6_pin, GPIO_STATE_LOW );
+    gpio_set_state( cfg->d7_pin, GPIO_STATE_LOW );
+    gpio_set_state( cfg->rs_pin, GPIO_STATE_LOW );
+    gpio_set_state( cfg->e_pin,  GPIO_STATE_LOW );
+
+    // Initialize and enable ADC if it's not already initialized
     adc_init();
-
-    // Configure ADC to receive voltages from push buttons
-    adc_set_vref( ADC_VREF_AVCC );
-    adc_set_channel( ADC_CHANNEL_A0 );
     adc_set_enabled( true );
 
     // Send initialization commands
-    send_function_set( true, false );
-    send_display_set( true, false, false );
-    send_entry_mode_set( true, false );
+    send_function_set( cfg, true, false );
+    send_display_set( cfg, true, false, false );
+    send_entry_mode_set( cfg, true, false );
 
     // Clear any content on the LCD
-    lcd1602a_clear();
+    lcd1602a_clear( cfg );
 
 } /* lcd1602a_init() */
 
 
-void lcd1602a_set_address( uint8_t addr )
+void lcd1602a_init_default( lcd1602a_cfg_t* cfg )
+{
+    lcd1602a_cfg_default( cfg );
+    lcd1602a_init( cfg );
+
+} /* lcd1602a_init_default() */
+
+
+void lcd1602a_set_address( lcd1602a_cfg_t const* cfg, uint8_t addr )
 {
     uint8_t instruction = ( 0x80 | addr );
 
-    select_register( REGISTER_INSTRUCTION );
-    send_byte( instruction );
+    select_register( cfg, REGISTER_INSTRUCTION );
+    send_byte( cfg, instruction );
     delay_short();
 
 } /* lcd1602a_set_address() */
 
 
-void lcd1602a_write_char( char c )
+void lcd1602a_write_char( lcd1602a_cfg_t const* cfg, char c )
 {
-    select_register( REGISTER_DATA );
-    send_byte( ( uint8_t )c );
+    select_register( cfg, REGISTER_DATA );
+    send_byte( cfg, ( uint8_t )c );
     delay_short();
 
 } /* lcd1602a_write_char() */
 
 
-void lcd1602a_write_lines( char const* s1, char const* s2 )
+void lcd1602a_write_lines( lcd1602a_cfg_t const* cfg, char const* s1, char const* s2 )
 {
-    lcd1602a_clear();
+    lcd1602a_clear( cfg );
 
     // Write first line
     if( s1 )
     {
-        lcd1602a_set_address( LCD1602A_ADDRESS_FIRST_LINE );
-        lcd1602a_write_string( s1 );
+        lcd1602a_set_address( cfg, LCD1602A_ADDRESS_FIRST_LINE );
+        lcd1602a_write_string( cfg, s1 );
     }
 
     // Write second line
     if( s2 )
     {
-        lcd1602a_set_address( LCD1602A_ADDRESS_SECOND_LINE );
-        lcd1602a_write_string( s2 );
+        lcd1602a_set_address( cfg, LCD1602A_ADDRESS_SECOND_LINE );
+        lcd1602a_write_string( cfg, s2 );
     }
 
 } /* lcd1602a_write_lines() */
 
 
-void lcd1602a_write_string( char const* s )
+void lcd1602a_write_string( lcd1602a_cfg_t const* cfg, char const* s )
 {
-    select_register( REGISTER_DATA );
+    select_register( cfg, REGISTER_DATA );
     while( *s )
     {
-        send_byte( ( uint8_t )*s );
+        send_byte( cfg, ( uint8_t )*s );
         delay_short();
         s++;
     }
@@ -248,24 +291,24 @@ void lcd1602a_write_string( char const* s )
 } /* lcd1602a_write_string() */
 
 
-static void buffer_data_lo( uint8_t data )
+static void buffer_data_lo( cfg_p cfg, uint8_t data )
 {
     // Low order 4 bits
-    buffer_data_bit( LCD_D4, data, 0 );
-    buffer_data_bit( LCD_D5, data, 1 );
-    buffer_data_bit( LCD_D6, data, 2 );
-    buffer_data_bit( LCD_D7, data, 3 );
+    buffer_data_bit( cfg->d4_pin, data, 0 );
+    buffer_data_bit( cfg->d5_pin, data, 1 );
+    buffer_data_bit( cfg->d6_pin, data, 2 );
+    buffer_data_bit( cfg->d7_pin, data, 3 );
 
 } /* buffer_data_lo() */
 
 
-static void buffer_data_hi( uint8_t data )
+static void buffer_data_hi( cfg_p cfg, uint8_t data )
 {
     // High order 4 bits
-    buffer_data_bit( LCD_D4, data, 4 );
-    buffer_data_bit( LCD_D5, data, 5 );
-    buffer_data_bit( LCD_D6, data, 6 );
-    buffer_data_bit( LCD_D7, data, 7 );
+    buffer_data_bit( cfg->d4_pin, data, 4 );
+    buffer_data_bit( cfg->d5_pin, data, 5 );
+    buffer_data_bit( cfg->d6_pin, data, 6 );
+    buffer_data_bit( cfg->d7_pin, data, 7 );
 
 } /* buffer_data_hi() */
 
@@ -284,36 +327,36 @@ static void delay_short( void )
 } /* delay_short() */
 
 
-static void pulse_enable( void )
+static void pulse_enable( cfg_p cfg )
 {
-    gpio_set_state( LCD_E, GPIO_STATE_LOW );
+    gpio_set_state( cfg->e_pin, GPIO_STATE_LOW );
     _delay_loop_1( DELAY_PULSE_ENABLE_LOOPS );
-    gpio_set_state( LCD_E, GPIO_STATE_HIGH );
+    gpio_set_state( cfg->e_pin, GPIO_STATE_HIGH );
     _delay_loop_1( DELAY_PULSE_ENABLE_LOOPS );
-    gpio_set_state( LCD_E, GPIO_STATE_LOW );
+    gpio_set_state( cfg->e_pin, GPIO_STATE_LOW );
 
 } /* pulse_enable() */
 
 
-static void select_register( register_t reg )
+static void select_register( cfg_p cfg, register_t reg )
 {
-    gpio_set_state( LCD_RS, ( reg == REGISTER_DATA ? GPIO_STATE_HIGH : GPIO_STATE_LOW ) );
+    gpio_set_state( cfg->rs_pin, ( reg == REGISTER_DATA ? GPIO_STATE_HIGH : GPIO_STATE_LOW ) );
 
 } /* select_register() */
 
 
-static void send_byte( uint8_t data )
+static void send_byte( cfg_p cfg, uint8_t data )
 {
-    buffer_data_hi( data );
-    pulse_enable();
+    buffer_data_hi( cfg, data );
+    pulse_enable( cfg );
 
-    buffer_data_lo( data );
-    pulse_enable();
+    buffer_data_lo( cfg, data );
+    pulse_enable( cfg );
 
 } /* send_byte() */
 
 
-static void send_display_set( bool display_on, bool cursor_underline_on, bool cursor_blink_on )
+static void send_display_set( cfg_p cfg, bool display_on, bool cursor_underline_on, bool cursor_blink_on )
 {
     uint8_t instruction = 0x08;
     if( display_on )
@@ -323,14 +366,14 @@ static void send_display_set( bool display_on, bool cursor_underline_on, bool cu
     if( cursor_blink_on )
         instruction |= 0x01;
 
-    select_register( REGISTER_INSTRUCTION );
-    send_byte( instruction );
+    select_register( cfg, REGISTER_INSTRUCTION );
+    send_byte( cfg, instruction );
     delay_short();
 
 } /* send_display_set() */
 
 
-static void send_entry_mode_set( bool increment_addr, bool auto_shift )
+static void send_entry_mode_set( cfg_p cfg, bool increment_addr, bool auto_shift )
 {
     uint8_t instruction = 0x04;
     if( increment_addr )
@@ -338,14 +381,14 @@ static void send_entry_mode_set( bool increment_addr, bool auto_shift )
     if( auto_shift )
         instruction |= 0x01;
 
-    select_register( REGISTER_INSTRUCTION );
-    send_byte( instruction );
+    select_register( cfg, REGISTER_INSTRUCTION );
+    send_byte( cfg, instruction );
     delay_short();
 
 } /* send_entry_mode_set() */
 
 
-static void send_function_set( bool two_line, bool large_font )
+static void send_function_set( cfg_p cfg, bool two_line, bool large_font )
 {
     uint8_t instruction = 0x20;
     if( two_line )
@@ -353,8 +396,8 @@ static void send_function_set( bool two_line, bool large_font )
     if( large_font )
         instruction |= 0x04;
 
-    select_register( REGISTER_INSTRUCTION );
-    send_byte( instruction );
+    select_register( cfg, REGISTER_INSTRUCTION );
+    send_byte( cfg, instruction );
     delay_short();
 
 } /* send_function_set() */

@@ -25,40 +25,18 @@
  */
 int main( void )
 {
-    // Startup delay for LCD
     _delay_ms( 500 );
 
-    // Initialize systems
-    lcd1602a_init();
-
-    lcd1602a_write_lines( "Button:", NULL );
+    lcd1602a_cfg_t lcd;
+    lcd1602a_init_default( &lcd );
+    lcd1602a_write_string( &lcd, "Button:" );
 
     while( true )
     {
-        // Get value
-        lcd1602a_button_t button = lcd1602a_get_button();
-        lcd1602a_set_address( LCD1602A_ADDRESS_SECOND_LINE );
-        switch( button )
-        {
-        case LCD1602A_BUTTON_NONE:
-            lcd1602a_write_string( "None  " );
-            break;
-        case LCD1602A_BUTTON_UP:
-            lcd1602a_write_string( "Up    " );
-            break;
-        case LCD1602A_BUTTON_DOWN:
-            lcd1602a_write_string( "Down  " );
-            break;
-        case LCD1602A_BUTTON_LEFT:
-            lcd1602a_write_string( "Left  " );
-            break;
-        case LCD1602A_BUTTON_RIGHT:
-            lcd1602a_write_string( "Right " );
-            break;
-        case LCD1602A_BUTTON_SELECT:
-            lcd1602a_write_string( "Select" );
-            break;
-        }
+        static const char* STRINGS[] = { "NONE  ", "UP    ", "DOWN  ", "LEFT  ", "RIGHT ", "SELECT" };
+        lcd1602a_button_t button = lcd1602a_get_button( &lcd );
+        lcd1602a_set_address( &lcd, LCD1602A_ADDRESS_SECOND_LINE );
+        lcd1602a_write_string( &lcd, STRINGS[ button ] );
     }
 
 } /* main() */
