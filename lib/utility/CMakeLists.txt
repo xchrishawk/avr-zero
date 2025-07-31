@@ -11,7 +11,7 @@ cmake_minimum_required(VERSION 3.22)
 # -- Library Configuration --
 
 set(LIBRARY_NAME     utility)
-set(LIBRARY_SOURCE   bit_ops.h pinout.h utility.h)
+set(LIBRARY_SOURCE   bit_ops.h pinout.h register.h utility.h)
 
 # -- Set Up Project --
 
