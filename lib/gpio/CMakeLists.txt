@@ -8,7 +8,7 @@
 
 cmake_minimum_required(VERSION 3.22)
 
-# -- Image Configuration --
+# -- Library Configuration --
 
 set(LIBRARY_NAME     gpio)
 set(LIBRARY_SOURCE   gpio.c gpio.h)

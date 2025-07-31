@@ -8,7 +8,7 @@
 
 cmake_minimum_required(VERSION 3.22)
 
-# -- Image Configuration --
+# -- Library Configuration --
 
 set(LIBRARY_NAME     adc)
 set(LIBRARY_SOURCE   adc.c adc.h)

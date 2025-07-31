@@ -8,7 +8,7 @@
 
 cmake_minimum_required(VERSION 3.22)
 
-# -- Image Configuration --
+# -- Library Configuration --
 
 set(LIBRARY_NAME     lcd1602a)
 set(LIBRARY_SOURCE   lcd1602a.c lcd1602a.h)
