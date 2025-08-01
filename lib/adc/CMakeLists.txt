@@ -12,7 +12,7 @@ cmake_minimum_required(VERSION 3.22)
 
 set(LIBRARY_NAME     adc)
 set(LIBRARY_SOURCE   adc.c adc.h)
-set(LIBRARY_LIBS     utility)
+set(LIBRARY_LIBS     zero)
 
 # -- Set Up Project --
 

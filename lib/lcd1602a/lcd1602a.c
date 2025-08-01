@@ -15,7 +15,7 @@
 
 #include "adc/adc.h"
 #include "gpio/gpio.h"
-#include "utility/utility.h"
+#include "zero/utility.h"
 
 #include "lcd1602a.h"
 

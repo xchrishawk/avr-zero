@@ -6,8 +6,8 @@
  * @date    2025-07-27
  */
 
-#if !defined( UTILITY_UTILITY_H )
-#define UTILITY_UTILITY_H
+#if !defined( ZERO_UTILITY_H )
+#define ZERO_UTILITY_H
 
 /* -- Macros -- */
 
@@ -18,4 +18,4 @@
 #define array_count( _a )                                                       \
     ( sizeof( _a ) / sizeof( _a[ 0 ] ) )
 
-#endif /* !defined( UTILITY_UTILITY_H ) */
+#endif /* !defined( ZERO_UTILITY_H ) */

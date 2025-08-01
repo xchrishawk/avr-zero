@@ -72,7 +72,7 @@ add_subdirectory(${PROJECT_LIBRARY_DIR}/adc)
 add_subdirectory(${PROJECT_LIBRARY_DIR}/gpio)
 add_subdirectory(${PROJECT_LIBRARY_DIR}/lcd1602a)
 add_subdirectory(${PROJECT_LIBRARY_DIR}/usart)
-add_subdirectory(${PROJECT_LIBRARY_DIR}/utility)
+add_subdirectory(${PROJECT_LIBRARY_DIR}/zero)
 
 # Executables
 add_subdirectory(${PROJECT_EXECUTABLE_DIR}/exakey)

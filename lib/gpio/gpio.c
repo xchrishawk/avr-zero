@@ -12,10 +12,10 @@
 
 #include <avr/io.h>
 
-#include "utility/bit_ops.h"
-#include "utility/pinout.h"
-#include "utility/register.h"
-#include "utility/utility.h"
+#include "zero/bit_ops.h"
+#include "zero/pinout.h"
+#include "zero/register.h"
+#include "zero/utility.h"
 
 #include "gpio.h"
 

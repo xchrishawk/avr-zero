@@ -13,7 +13,7 @@
 
 #include <avr/io.h>
 
-#include "utility/bit_ops.h"
+#include "zero/bit_ops.h"
 
 #include "adc.h"
 

@@ -12,7 +12,7 @@ cmake_minimum_required(VERSION 3.22)
 
 set(LIBRARY_NAME     gpio)
 set(LIBRARY_SOURCE   gpio.c gpio.h)
-set(LIBRARY_LIBS     utility)
+set(LIBRARY_LIBS     zero)
 
 # -- Set Up Project --
 

@@ -12,7 +12,7 @@ cmake_minimum_required(VERSION 3.22)
 
 set(EXECUTABLE_NAME     exakey)
 set(EXECUTABLE_SOURCE   main.c)
-set(EXECUTABLE_LIBS     adc gpio lcd1602a usart utility)
+set(EXECUTABLE_LIBS     adc gpio lcd1602a usart zero)
 
 # -- Set Up Project --
 

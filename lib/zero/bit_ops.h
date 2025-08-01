@@ -6,8 +6,8 @@
  * @date    2025-07-21
  */
 
-#if !defined( UTILITY_BIT_OPS_H )
-#define UTILITY_BIT_OPS_H
+#if !defined( ZERO_BIT_OPS_H )
+#define ZERO_BIT_OPS_H
 
 /* -- Macros -- */
 
@@ -195,4 +195,4 @@
 #define wait_bit_set( _tgt, _b )                                                \
     do { } while( ! is_bit_set( _tgt, _b ) )
 
-#endif /* !defined( UTILITY_BIT_OPS_H ) */
+#endif /* !defined( ZERO_BIT_OPS_H ) */

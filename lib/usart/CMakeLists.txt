@@ -12,7 +12,7 @@ cmake_minimum_required(VERSION 3.22)
 
 set(LIBRARY_NAME    usart)
 set(LIBRARY_SOURCE  usart.c usart.h)
-set(LIBRARY_LIBS    utility)
+set(LIBRARY_LIBS    zero)
 
 # -- Set Up Project --
 
