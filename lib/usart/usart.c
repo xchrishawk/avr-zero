@@ -22,7 +22,7 @@
 /* -- Macros -- */
 
 // Helper macro for the register table below
-#define DEFINE_REGISTERS( _port )                                              \
+#define DEFINE_REGISTERS( _port )                                               \
     { REGISTER_ADDR( UDR ## _port ),                                            \
       REGISTER_ADDR( UCSR ## _port ## A ),                                      \
       REGISTER_ADDR( UCSR ## _port ## B ),                                      \
@@ -162,6 +162,13 @@ void usart_set_data_bits( usart_port_t port, usart_data_bits_t data_bits )
 } /* usart_set_data_bits() */
 
 
+void usart_set_data_empty_interrupt_enabled( usart_port_t port, bool enabled )
+{
+    assign_bit( PORT_UCSRB( port ), UDRIE0, enabled );
+
+} /* usart_set_data_empty_interrupt_enabled() */
+
+
 void usart_set_parity( usart_port_t port, usart_parity_t parity )
 {
     switch( parity )
@@ -191,6 +198,13 @@ void usart_set_parity( usart_port_t port, usart_parity_t parity )
 } /* usart_set_parity() */
 
 
+void usart_set_rx_complete_interrupt_enabled( usart_port_t port, bool enabled )
+{
+    assign_bit( PORT_UCSRB( port ), RXCIE0, enabled );
+
+} /* usart_set_rx_complete_interrupt_enabled() */
+
+
 void usart_set_rx_enabled( usart_port_t port, bool enabled )
 {
     assign_bit( PORT_UCSRB( port ), RXEN0, enabled );
@@ -215,6 +229,13 @@ void usart_set_stop_bits( usart_port_t port, usart_stop_bits_t stop_bits )
     }
 
 } /* usart_set_stop_bits() */
+
+
+void usart_set_tx_complete_interrupt_enabled( usart_port_t port, bool enabled )
+{
+    assign_bit( PORT_UCSRB( port ), TXCIE0, enabled );
+
+} /* usart_set_tx_complete_interrupt_enabled() */
 
 
 void usart_set_tx_enabled( usart_port_t port, bool enabled )

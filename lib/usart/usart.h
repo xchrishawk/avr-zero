@@ -124,10 +124,22 @@ size_t usart_rx_until( usart_port_t port, char terminator, char* buf, size_t buf
 void usart_set_data_bits( usart_port_t port, usart_data_bits_t data_bits );
 
 /**
+ * @fn      usart_set_data_empty_interrupt_enabled( usart_port_t, bool )
+ * @brief   Enables or disables the data register empty interrupt for the specified USART port.
+ */
+void usart_set_data_empty_interrupt_enabled( usart_port_t port, bool enabled );
+
+/**
  * @fn      usart_set_parity( usart_port_t, usart_parity_t )
  * @brief   Sets the parity of the specified USART port.
  */
 void usart_set_parity( usart_port_t port, usart_parity_t parity );
+
+/**
+ * @fn      usart_set_rxcie_enabled( usart_port_t, bool )
+ * @brief   Enables or disables the RX complete interrupt for the specified USART port.
+ */
+void usart_set_rx_complete_interrupt_enabled( usart_port_t port, bool enabled );
 
 /**
  * @fn      usart_set_rx_enabled( usart_port_t, bool )
@@ -146,6 +158,12 @@ void usart_set_stop_bits( usart_port_t port, usart_stop_bits_t stop_bits );
  * @brief   Enables or disables TX for the specified USART port.
  */
 void usart_set_tx_enabled( usart_port_t port, bool enabled );
+
+/**
+ * @fn      usart_set_tx_complete_interrupt_enabled
+ * @brief   Enables or disables the TX complete interrupt for the specified USART port.
+ */
+void usart_set_tx_complete_interrupt_enabled( usart_port_t port, bool enabled );
 
 /**
  * @fn      usart_tx( usart_port_t, uint8_t )
