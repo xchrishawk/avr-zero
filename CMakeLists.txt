@@ -75,5 +75,4 @@ add_subdirectory(${PROJECT_LIBRARY_DIR}/usart)
 add_subdirectory(${PROJECT_LIBRARY_DIR}/zero)
 
 # Executables
-add_subdirectory(${PROJECT_EXECUTABLE_DIR}/exakey)
-add_subdirectory(${PROJECT_EXECUTABLE_DIR}/minikey)
+add_subdirectory(${PROJECT_EXECUTABLE_DIR}/blink)
