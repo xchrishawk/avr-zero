@@ -155,18 +155,44 @@
 
 /**
  * @def     is_bit_set( _tgt, _b )
- * @brief   Returns @c true if the zero-indexed bit specified by @c _b in
- *          @c _tgt is set.
+ * @brief   Returns @c true if the zero-indexed bit specified by @c _b in @c _tgt is set.
  */
 #define is_bit_set( _tgt, _b )                                                  \
     is_bitmask_set( _tgt, bitmask( _b ) )
 
 /**
  * @def     is_bit_clear( _tgt, _b )
- * @brief   Returns @c true if the zero-indexed bit specified by @c _b in
- *          @c _tgt is clear.
+ * @brief   Returns @c true if the zero-indexed bit specified by @c _b in @c _tgt is clear.
  */
 #define is_bit_clear( _tgt, _b )                                                \
     is_bitmask_clear( _tgt, bitmask( _b ) )
+
+/**
+ * @def     wait_bitmask_clear( _tgt, _m )
+ * @brief   Waits in a spin loop until all bits specified by @c _m in @c _tgt are clear.
+ */
+#define wait_bitmask_clear( _tgt, _m )                                          \
+    do { } while( ! is_bitmask_clear( _tgt, _m ) )
+
+/**
+ * @def     wait_bitmask_set( _tgt, _m )
+ * @brief   Waits in a spin loop until all bits specified by @c _m in @c _tgt are set.
+ */
+#define wait_bitmask_set( _tgt, _m )                                            \
+    do { } while( ! is_bitmask_set( _tgt, _m ) )
+
+/**
+ * @def     wait_bit_clear( _tgt, _b )
+ * @brief   Waits in a spin loop until the zero-indexed bit specified by @c _b in @c _tgt is clear.
+ */
+#define wait_bit_clear( _tgt, _b )                                              \
+    do { } while( ! is_bit_clear( _tgt, _b ) )
+
+/**
+ * @def     wait_bit_set( _tgt, _b )
+ * @brief   Waits in a spin loop until the zero-indexed bit specified by @c _b in @c _tgt is set.
+ */
+#define wait_bit_set( _tgt, _b )                                                \
+    do { } while( ! is_bit_set( _tgt, _b ) )
 
 #endif /* !defined( BIT_OPS_H ) */

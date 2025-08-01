@@ -21,12 +21,12 @@
 
 /* -- Macros -- */
 
-// Helper macro for the I/O table below
-#define GPIO_TBL( _port, _pin )                                                 \
-    _GPIO_TBL( _port, _pin )
-#define _GPIO_TBL( _port, _pin )                                                \
-    { REGISTER_ADDR( DDR ## _port ),  ( 1 << DD ## _port ## _pin ),                            \
-      REGISTER_ADDR( PORT ## _port ), ( 1 << PORT ## _port ## _pin ),                          \
+// Helper macro for the register table below
+#define DEFINE_REGISTERS( _port, _pin )                                         \
+    _DEFINE_REGISTERS( _port, _pin )
+#define _DEFINE_REGISTERS( _port, _pin )                                        \
+    { REGISTER_ADDR( DDR ## _port ),  ( 1 << DD ## _port ## _pin ),             \
+      REGISTER_ADDR( PORT ## _port ), ( 1 << PORT ## _port ## _pin ),           \
       REGISTER_ADDR( PIN ## _port ),  ( 1 << PIN ## _port ## _pin ) }
 
 // Argument validation macros
@@ -39,7 +39,7 @@
 
 /* -- Constants -- */
 
-// Table defining registers and pins for each supported GPIO
+// Register lookup table for each GPIO pin
 static struct
 {
     register_t  ddr_reg;
@@ -51,29 +51,29 @@ static struct
 }
 const s_reg_tbl[] =
 {
-    GPIO_TBL(   _GPIO_PIN_ARDUINO_D0_PORT,      _GPIO_PIN_ARDUINO_D0_PIN    ),
-    GPIO_TBL(   _GPIO_PIN_ARDUINO_D1_PORT,      _GPIO_PIN_ARDUINO_D1_PIN    ),
-    GPIO_TBL(   _GPIO_PIN_ARDUINO_D2_PORT,      _GPIO_PIN_ARDUINO_D2_PIN    ),
-    GPIO_TBL(   _GPIO_PIN_ARDUINO_D3_PORT,      _GPIO_PIN_ARDUINO_D3_PIN    ),
-    GPIO_TBL(   _GPIO_PIN_ARDUINO_D4_PORT,      _GPIO_PIN_ARDUINO_D4_PIN    ),
-    GPIO_TBL(   _GPIO_PIN_ARDUINO_D5_PORT,      _GPIO_PIN_ARDUINO_D5_PIN    ),
-    GPIO_TBL(   _GPIO_PIN_ARDUINO_D6_PORT,      _GPIO_PIN_ARDUINO_D6_PIN    ),
-    GPIO_TBL(   _GPIO_PIN_ARDUINO_D7_PORT,      _GPIO_PIN_ARDUINO_D7_PIN    ),
-    GPIO_TBL(   _GPIO_PIN_ARDUINO_D8_PORT,      _GPIO_PIN_ARDUINO_D8_PIN    ),
-    GPIO_TBL(   _GPIO_PIN_ARDUINO_D9_PORT,      _GPIO_PIN_ARDUINO_D9_PIN    ),
-    GPIO_TBL(   _GPIO_PIN_ARDUINO_D10_PORT,     _GPIO_PIN_ARDUINO_D10_PIN   ),
-    GPIO_TBL(   _GPIO_PIN_ARDUINO_D11_PORT,     _GPIO_PIN_ARDUINO_D11_PIN   ),
-    GPIO_TBL(   _GPIO_PIN_ARDUINO_D12_PORT,     _GPIO_PIN_ARDUINO_D12_PIN   ),
-    GPIO_TBL(   _GPIO_PIN_ARDUINO_D13_PORT,     _GPIO_PIN_ARDUINO_D13_PIN   ),
-    GPIO_TBL(   _GPIO_PIN_ARDUINO_D14_PORT,     _GPIO_PIN_ARDUINO_D14_PIN   ),
-    GPIO_TBL(   _GPIO_PIN_ARDUINO_D15_PORT,     _GPIO_PIN_ARDUINO_D15_PIN   ),
-    GPIO_TBL(   _GPIO_PIN_ARDUINO_D16_PORT,     _GPIO_PIN_ARDUINO_D16_PIN   ),
-    GPIO_TBL(   _GPIO_PIN_ARDUINO_D17_PORT,     _GPIO_PIN_ARDUINO_D17_PIN   ),
-    GPIO_TBL(   _GPIO_PIN_ARDUINO_D18_PORT,     _GPIO_PIN_ARDUINO_D18_PIN   ),
-    GPIO_TBL(   _GPIO_PIN_ARDUINO_D19_PORT,     _GPIO_PIN_ARDUINO_D19_PIN   ),
+    DEFINE_REGISTERS(   _GPIO_PIN_ARDUINO_D0_PORT,      _GPIO_PIN_ARDUINO_D0_PIN    ),
+    DEFINE_REGISTERS(   _GPIO_PIN_ARDUINO_D1_PORT,      _GPIO_PIN_ARDUINO_D1_PIN    ),
+    DEFINE_REGISTERS(   _GPIO_PIN_ARDUINO_D2_PORT,      _GPIO_PIN_ARDUINO_D2_PIN    ),
+    DEFINE_REGISTERS(   _GPIO_PIN_ARDUINO_D3_PORT,      _GPIO_PIN_ARDUINO_D3_PIN    ),
+    DEFINE_REGISTERS(   _GPIO_PIN_ARDUINO_D4_PORT,      _GPIO_PIN_ARDUINO_D4_PIN    ),
+    DEFINE_REGISTERS(   _GPIO_PIN_ARDUINO_D5_PORT,      _GPIO_PIN_ARDUINO_D5_PIN    ),
+    DEFINE_REGISTERS(   _GPIO_PIN_ARDUINO_D6_PORT,      _GPIO_PIN_ARDUINO_D6_PIN    ),
+    DEFINE_REGISTERS(   _GPIO_PIN_ARDUINO_D7_PORT,      _GPIO_PIN_ARDUINO_D7_PIN    ),
+    DEFINE_REGISTERS(   _GPIO_PIN_ARDUINO_D8_PORT,      _GPIO_PIN_ARDUINO_D8_PIN    ),
+    DEFINE_REGISTERS(   _GPIO_PIN_ARDUINO_D9_PORT,      _GPIO_PIN_ARDUINO_D9_PIN    ),
+    DEFINE_REGISTERS(   _GPIO_PIN_ARDUINO_D10_PORT,     _GPIO_PIN_ARDUINO_D10_PIN   ),
+    DEFINE_REGISTERS(   _GPIO_PIN_ARDUINO_D11_PORT,     _GPIO_PIN_ARDUINO_D11_PIN   ),
+    DEFINE_REGISTERS(   _GPIO_PIN_ARDUINO_D12_PORT,     _GPIO_PIN_ARDUINO_D12_PIN   ),
+    DEFINE_REGISTERS(   _GPIO_PIN_ARDUINO_D13_PORT,     _GPIO_PIN_ARDUINO_D13_PIN   ),
+    DEFINE_REGISTERS(   _GPIO_PIN_ARDUINO_D14_PORT,     _GPIO_PIN_ARDUINO_D14_PIN   ),
+    DEFINE_REGISTERS(   _GPIO_PIN_ARDUINO_D15_PORT,     _GPIO_PIN_ARDUINO_D15_PIN   ),
+    DEFINE_REGISTERS(   _GPIO_PIN_ARDUINO_D16_PORT,     _GPIO_PIN_ARDUINO_D16_PIN   ),
+    DEFINE_REGISTERS(   _GPIO_PIN_ARDUINO_D17_PORT,     _GPIO_PIN_ARDUINO_D17_PIN   ),
+    DEFINE_REGISTERS(   _GPIO_PIN_ARDUINO_D18_PORT,     _GPIO_PIN_ARDUINO_D18_PIN   ),
+    DEFINE_REGISTERS(   _GPIO_PIN_ARDUINO_D19_PORT,     _GPIO_PIN_ARDUINO_D19_PIN   ),
 };
 
-// Ensure GPIO table has an entry for every defined pin
+// Ensure register table has an entry for every defined pin
 _Static_assert( array_count( s_reg_tbl ) == GPIO_PIN_COUNT, "s_reg_tbl must have correct number of entries!" );
 
 /* -- Procedures -- */
