@@ -37,7 +37,7 @@ set(CMAKE_C_COMPILER        ${AVR_GCC})
 # -- Project Setup --
 
 # Top-level project definition
-project(exakey LANGUAGES C ASM)
+project(avr-zero LANGUAGES C ASM)
 
 # Set up project directories
 set(PROJECT_BASE_DIR        ${CMAKE_CURRENT_SOURCE_DIR})
