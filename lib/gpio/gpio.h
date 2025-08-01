@@ -6,8 +6,8 @@
  * @date    2025-07-21
  */
 
-#if !defined( GPIO_H )
-#define GPIO_H
+#if !defined( GPIO_GPIO_H )
+#define GPIO_GPIO_H
 
 /* -- Includes -- */
 
@@ -107,4 +107,4 @@ gpio_state_t gpio_get_state( gpio_pin_t pin );
  */
 void gpio_set_state( gpio_pin_t pin, gpio_state_t state );
 
-#endif /* !defined( GPIO_H ) */
+#endif /* !defined( GPIO_GPIO_H ) */

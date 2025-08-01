@@ -6,8 +6,8 @@
  * @date    2025-07-31
  */
 
-#if !defined( REGISTER_H )
-#define REGISTER_H
+#if !defined( UTILITY_REGISTER_H )
+#define UTILITY_REGISTER_H
 
 /* -- Includes -- */
 
@@ -30,4 +30,4 @@ typedef volatile uint8_t* register_t;
 #define REGISTER_ADDR( _reg )                                                   \
     ( ( register_t )( & ( _reg ) ) )
 
-#endif /* !defined( REGISTER_H ) */
+#endif /* !defined( UTILITY_REGISTER_H ) */

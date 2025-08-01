@@ -6,8 +6,8 @@
  * @date    2025-07-21
  */
 
-#if !defined( PINOUT_H )
-#define PINOUT_H
+#if !defined( UTILITY_PINOUT_H )
+#define UTILITY_PINOUT_H
 
 /* -- Includes -- */
 
@@ -107,4 +107,4 @@
 
 #endif
 
-#endif /* !defined( PINOUT_H ) */
+#endif /* !defined( UTILITY_PINOUT_H ) */

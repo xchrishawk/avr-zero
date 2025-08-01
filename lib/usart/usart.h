@@ -6,8 +6,8 @@
  * @date    2025-07-31
  */
 
-#if !defined( USART_H )
-#define USART_H
+#if !defined( USART_USART_H )
+#define USART_USART_H
 
 /* -- Includes -- */
 
@@ -185,4 +185,4 @@ void usart_wait_tx_complete( usart_port_t port );
  */
 void usart_write( usart_port_t port, uint8_t byte );
 
-#endif /* !defined( USART_H ) */
+#endif /* !defined( USART_USART_H ) */

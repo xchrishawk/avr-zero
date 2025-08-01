@@ -6,8 +6,8 @@
  * @date    2025-07-26
  */
 
-#if !defined( ADC_H )
-#define ADC_H
+#if !defined( ADC_ADC_H )
+#define ADC_ADC_H
 
 /* -- Includes -- */
 
@@ -102,4 +102,4 @@ void adc_start( void );
  */
 void adc_wait( void );
 
-#endif /* !defined( ADC_H ) */
+#endif /* !defined( ADC_ADC_H ) */
