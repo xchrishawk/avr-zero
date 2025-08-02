@@ -14,6 +14,10 @@
 
 #include "gpio/gpio.h"
 
+/* -- Constants -- */
+
+#define DELAY   ( 100 )
+
 /* -- Procedures -- */
 
 int main( void )
@@ -24,9 +28,9 @@ int main( void )
     while( true )
     {
         gpio_set_state( GPIO_PIN_ARDUINO_BUILT_IN_LED, GPIO_STATE_HIGH );
-        _delay_ms( 100 );
+        _delay_ms( DELAY );
         gpio_set_state( GPIO_PIN_ARDUINO_BUILT_IN_LED, GPIO_STATE_LOW );
-        _delay_ms( 100 );
+        _delay_ms( DELAY );
     }
 
 } /* main() */
