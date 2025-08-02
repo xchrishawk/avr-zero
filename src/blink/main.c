@@ -22,8 +22,7 @@
 
 int main( void )
 {
-    gpio_cfg_t cfg = { GPIO_DIR_OUT };
-    gpio_configure( GPIO_PIN_ARDUINO_BUILT_IN_LED, &cfg );
+    gpio_set_dir( GPIO_PIN_ARDUINO_BUILT_IN_LED, GPIO_DIR_OUT );
 
     while( true )
     {

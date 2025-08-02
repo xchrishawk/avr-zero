@@ -39,12 +39,9 @@ static void set_power( bool on );
 int main( void )
 {
     // Configure GPIO
-    gpio_cfg_t cfg = { GPIO_DIR_OUT };
-    gpio_configure( LED_PIN, &cfg );
-    gpio_configure( CTRL_PIN, &cfg );
-
-    // Initialize GPIO state
-    set_power( false );
+    gpio_config_t config = { GPIO_DIR_OUT, GPIO_STATE_LOW };
+    gpio_set_config( LED_PIN,  &config );
+    gpio_set_config( CTRL_PIN, &config );
 
     // Configure USART
     usart_set_data_bits( PORT, USART_DATA_BITS_8 );

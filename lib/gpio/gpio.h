@@ -78,22 +78,39 @@ enum
 };
 
 /**
- * @struct  gpio_cfg_t
+ * @struct  gpio_config_t
  * @brief   Struct representing the configuration for a GPIO pin.
  */
 typedef struct
 {
-    gpio_dir_t      dir;            /**< The pin's I/O direction.                       */
-    bool            pullup_en;      /**< If set to `true`, pull-up resistor is enabled. */
-} gpio_cfg_t;
+    gpio_dir_t          dir;        /**< The pin's I/O direction.                       */
+    union
+    {
+        bool            pullup_en;  /**< (for inputs) Pull-up resistor enablement.      */
+        gpio_state_t    state;      /**< (for outputs) Initial state.                   */
+    };
+} gpio_config_t;
 
 /* -- Procedure Prototypes -- */
 
 /**
- * @fn      gpio_configure( gpio_pin_t, gpio_cfg_t const* )
- * @brief   Sets the configuration of the specified GPIO pin.
+ * @fn      gpio_get_config( gpio_pin_t, gpio_config_t* )
+ * @brief   Gets the configuration of the specified GPIO pin.
  */
-void gpio_configure( gpio_pin_t pin, gpio_cfg_t const* cfg );
+void gpio_get_config( gpio_pin_t pin, gpio_config_t* config );
+
+/**
+ * @fn      gpio_get_dir( gpio_pin_t )
+ * @brief   Gets the I/O direction (in or out) of the specified GPIO pin.
+ */
+gpio_dir_t gpio_get_dir( gpio_pin_t pin );
+
+/**
+ * @fn      gpio_get_pullup_enabled( gpio_pin_t )
+ * @brief   Gets the enablement of the pull-up resistor for the specified GPIO pin.
+ * @note    This is only valid if the pin is configured as an input. This is not checked by the function.
+ */
+bool gpio_get_pullup_enabled( gpio_pin_t pin );
 
 /**
  * @fn      gpio_get_state( gpio_pin_t )
@@ -102,9 +119,34 @@ void gpio_configure( gpio_pin_t pin, gpio_cfg_t const* cfg );
 gpio_state_t gpio_get_state( gpio_pin_t pin );
 
 /**
+ * @fn      gpio_set_config( gpio_pin_t, gpio_config_t const* )
+ * @brief   Sets the configuration of the specified GPIO pin.
+ */
+void gpio_set_config( gpio_pin_t pin, gpio_config_t const* config );
+
+/**
+ * @fn      gpio_set_dir( gpio_pin_t, gpio_dir_t )
+ * @brief   Sets the I/O direction (in or out) of the specified GPIO pin.
+ */
+void gpio_set_dir( gpio_pin_t pin, gpio_dir_t dir );
+
+/**
+ * @fn      gpio_set_pullup_enabled( gpio_pin_t, bool )
+ * @brief   Sets the enablement of the pull-up resistor for the specified GPIO pin.
+ * @note    This is only valid if the pin is configured as an input. This is not checked by the function.
+ */
+void gpio_set_pullup_enabled( gpio_pin_t pin, bool enabled );
+
+/**
  * @fn      gpio_set_state( gpio_pin_t, gpio_state_t )
  * @brief   Sets the state (low or high) of the specified GPIO pin.
  */
 void gpio_set_state( gpio_pin_t pin, gpio_state_t state );
+
+/**
+ * @fn      gpio_toggle_state( gpio_pin_t )
+ * @brief   Toggles the state of the specified GPIO pin.
+ */
+void gpio_toggle_state( gpio_pin_t pin );
 
 #endif /* !defined( GPIO_GPIO_H ) */

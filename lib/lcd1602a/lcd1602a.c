@@ -198,21 +198,13 @@ void lcd1602a_home( lcd1602a_cfg_t const* cfg )
 void lcd1602a_init( lcd1602a_cfg_t const* cfg )
 {
     // Set configuration for all GPIO pins
-    gpio_cfg_t const gpio_cfg = { GPIO_DIR_OUT, false };
+    gpio_config_t const gpio_cfg = { GPIO_DIR_OUT, GPIO_STATE_LOW };
     gpio_configure( cfg->d4_pin, &gpio_cfg );
     gpio_configure( cfg->d5_pin, &gpio_cfg );
     gpio_configure( cfg->d6_pin, &gpio_cfg );
     gpio_configure( cfg->d7_pin, &gpio_cfg );
     gpio_configure( cfg->rs_pin, &gpio_cfg );
     gpio_configure( cfg->e_pin,  &gpio_cfg );
-
-    // Set initial state for all GPIO pins
-    gpio_set_state( cfg->d4_pin, GPIO_STATE_LOW );
-    gpio_set_state( cfg->d5_pin, GPIO_STATE_LOW );
-    gpio_set_state( cfg->d6_pin, GPIO_STATE_LOW );
-    gpio_set_state( cfg->d7_pin, GPIO_STATE_LOW );
-    gpio_set_state( cfg->rs_pin, GPIO_STATE_LOW );
-    gpio_set_state( cfg->e_pin,  GPIO_STATE_LOW );
 
     // Initialize and enable ADC if it's not already initialized
     adc_init();

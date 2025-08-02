@@ -78,37 +78,37 @@ _Static_assert( array_count( s_reg_tbl ) == GPIO_PIN_COUNT, "s_reg_tbl must have
 
 /* -- Procedures -- */
 
-void gpio_configure( gpio_pin_t pin, gpio_cfg_t const* cfg )
+void gpio_get_config( gpio_pin_t pin, gpio_config_t* config )
+{
+    config->dir = gpio_get_dir( pin );
+    if( config->dir == GPIO_DIR_OUT )
+        config->state = gpio_get_state( pin );
+    else if( config->dir == GPIO_DIR_IN )
+        config->pullup_en = gpio_get_pullup_enabled( pin );
+
+} /* gpio_get_config() */
+
+
+gpio_dir_t gpio_get_dir( gpio_pin_t pin )
 {
     validate_pin( pin );
-    validate_dir( cfg->dir );
 
-    // Set direction
-    assign_bitmask( *s_reg_tbl[ pin ].ddr_reg,
-                     s_reg_tbl[ pin ].ddr_mask,
-                     cfg->dir );
+    return( is_bitmask_set( *s_reg_tbl[ pin ].ddr_reg,
+                             s_reg_tbl[ pin ].ddr_mask ) ?
+            GPIO_DIR_OUT :
+            GPIO_DIR_IN );
 
-    // If direction is output, set pull-up
-    if( cfg->dir == GPIO_DIR_IN )
-    {
-        assign_bitmask( *s_reg_tbl[ pin ].out_reg,
-                         s_reg_tbl[ pin ].out_mask,
-                         cfg->pullup_en );
-    }
-
-} /* gpio_configure() */
+} /* gpio_get_dir() */
 
 
-void gpio_set_dir( gpio_pin_t pin, gpio_dir_t dir )
+bool gpio_get_pullup_enabled( gpio_pin_t pin )
 {
     validate_pin( pin );
-    validate_dir( dir );
 
-    assign_bitmask( *s_reg_tbl[ pin ].ddr_reg,
-                     s_reg_tbl[ pin ].ddr_mask,
-                     dir );
+    return( ( bool )is_bitmask_set( *s_reg_tbl[ pin ].out_reg,
+                                     s_reg_tbl[ pin ].out_mask ) );
 
-} /* gpio_set_dir() */
+} /* gpio_get_pullup_enabled() */
 
 
 gpio_state_t gpio_get_state( gpio_pin_t pin )
@@ -123,6 +123,40 @@ gpio_state_t gpio_get_state( gpio_pin_t pin )
 } /* gpio_get_state() */
 
 
+void gpio_set_config( gpio_pin_t pin, gpio_config_t const* config )
+{
+    gpio_set_dir( pin, config->dir );
+    if( config->dir == GPIO_DIR_OUT )
+        gpio_set_state( pin, config->state );
+    else if( config->dir == GPIO_DIR_IN )
+        gpio_set_pullup_enabled( pin, config->pullup_en );
+
+} /* gpio_set_config() */
+
+
+void gpio_set_dir( gpio_pin_t pin, gpio_dir_t dir )
+{
+    validate_pin( pin );
+    validate_dir( dir );
+
+    assign_bitmask( *s_reg_tbl[ pin ].ddr_reg,
+                     s_reg_tbl[ pin ].ddr_mask,
+                     dir == GPIO_DIR_OUT );
+
+} /* gpio_set_dir() */
+
+
+void gpio_set_pullup_enabled( gpio_pin_t pin, bool enabled )
+{
+    validate_pin( pin );
+
+    assign_bitmask( *s_reg_tbl[ pin ].out_reg,
+                     s_reg_tbl[ pin ].out_mask,
+                     enabled );
+
+} /* gpio_set_pullup_enabled() */
+
+
 void gpio_set_state( gpio_pin_t pin, gpio_state_t state )
 {
     validate_pin( pin );
@@ -130,6 +164,16 @@ void gpio_set_state( gpio_pin_t pin, gpio_state_t state )
 
     assign_bitmask( *s_reg_tbl[ pin ].out_reg,
                      s_reg_tbl[ pin ].out_mask,
-                     state );
+                     state == GPIO_STATE_HIGH );
 
 } /* gpio_set_state() */
+
+
+void gpio_toggle_state( gpio_pin_t pin )
+{
+    validate_pin( pin );
+
+    toggle_bitmask( *s_reg_tbl[ pin ].out_reg,
+                     s_reg_tbl[ pin ].out_mask );
+
+} /* gpio_toggle_state() */
