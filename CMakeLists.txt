@@ -76,3 +76,4 @@ add_subdirectory(${PROJECT_LIBRARY_DIR}/zero)
 
 # Executables
 add_subdirectory(${PROJECT_EXECUTABLE_DIR}/blink)
+add_subdirectory(${PROJECT_EXECUTABLE_DIR}/powerbar-switcher)
