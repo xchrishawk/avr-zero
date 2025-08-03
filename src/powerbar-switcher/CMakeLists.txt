@@ -11,8 +11,8 @@ cmake_minimum_required(VERSION 3.22)
 # -- Executable Configuration --
 
 set(EXECUTABLE_NAME     powerbar-switcher)
-set(EXECUTABLE_SOURCE   main.c)
-set(EXECUTABLE_LIBS     gpio usart)
+set(EXECUTABLE_SOURCE   com.c com.h event.c event.h main.c powerbar.c powerbar.h)
+set(EXECUTABLE_LIBS     gpio usart zero)
 
 # -- Set Up Project --
 

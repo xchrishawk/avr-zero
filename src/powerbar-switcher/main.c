@@ -8,72 +8,75 @@
 
 /* -- Includes -- */
 
+#include <assert.h>
 #include <stdbool.h>
 #include <string.h>
 
 #include <avr/interrupt.h>
 #include <util/delay.h>
 
-#include "gpio/gpio.h"
 #include "usart/usart.h"
+
+#include "com.h"
+#include "event.h"
+#include "powerbar.h"
 
 /* -- Constants -- */
 
-#define PORT            USART_PORT_0
-#define LED_PIN         GPIO_PIN_ARDUINO_BUILT_IN_LED
-#define CTRL_PIN        GPIO_PIN_ARDUINO_D14
+#define INPUT_BUF_SIZE      32
 
-#define ON_CMD          'n'
-#define OFF_CMD         'f'
+static const uint32_t       TIMEOUT_MS = 10800000; // 3 hours in milliseconds
 
 /* -- Procedure Prototypes -- */
 
 /**
- * @fn      set_power( bool )
- * @brief   Activates or deactivates the power.
+ * @fn      handle_com_rx( void )
+ * @brief   Handles serial communication RX events.
  */
-static void set_power( bool on );
+static void handle_com_rx( void );
+
+/**
+ * @fn      handle_tick( void )
+ * @brief   Handles the 1 millisecond tick count timer.
+ */
+static void handle_tick( void );
+
+/**
+ * @fn      process_command( char const* )
+ * @brief   Processes the specified command.
+ */
+static void process_command( char const* cmd );
+
+/* -- Variables -- */
+
+static bool s_timeout = true;
 
 /* -- Procedures -- */
 
 int main( void )
 {
-    // Configure GPIO
-    gpio_config_t config = { GPIO_DIR_OUT, GPIO_STATE_LOW };
-    gpio_set_config( LED_PIN,  &config );
-    gpio_set_config( CTRL_PIN, &config );
+    // Initialize hardware
+    com_init();
+    powerbar_init();
 
-    // Configure USART
-    usart_set_data_bits( PORT, USART_DATA_BITS_8 );
-    usart_set_stop_bits( PORT, USART_STOP_BITS_1 );
-    usart_set_parity( PORT, USART_PARITY_NONE );
-    usart_autoconfigure_baud( PORT );
+    // Initialize event manager
+    event_init();
 
-    // Enable USART
-    usart_set_tx_enabled( PORT, true );
-    usart_set_rx_enabled( PORT, true );
-
-    // Enter main loop
     while( true )
     {
-        // Receive message and execute command
-        char c = ( char )usart_rx( PORT );
-        switch( c )
+        event_t event = event_wait();
+        switch( event )
         {
-        case ON_CMD:
-            set_power( true );
-            usart_tx_string( PORT, "Power: ON\r\n" );
+        case EVENT_TICK:
+            handle_tick();
             break;
 
-        case OFF_CMD:
-            set_power( false );
-            usart_tx_string( PORT, "Power: OFF\r\n" );
+        case EVENT_COM_RX:
+            handle_com_rx();
             break;
 
         default:
-            usart_tx_string( PORT, "Invalid command: " );
-            usart_tx( PORT, c );
-            usart_tx_string( PORT, "\r\n" );
+            assert( false );
             break;
         }
     }
@@ -81,9 +84,97 @@ int main( void )
 } /* main() */
 
 
-static void set_power( bool on )
+static void handle_com_rx( void )
 {
-    gpio_set_state( LED_PIN,  on ? GPIO_STATE_HIGH : GPIO_STATE_LOW );
-    gpio_set_state( CTRL_PIN, on ? GPIO_STATE_HIGH : GPIO_STATE_LOW );
+    // Read status from com module
+    static char input[ INPUT_BUF_SIZE ];
+    com_rx_status_t status = com_rx( input, INPUT_BUF_SIZE );
+    switch( status )
+    {
+    case COM_RX_STATUS_WAIT:
+        // No action required
+        break;
 
-} /* set_power_on() */
+    case COM_RX_STATUS_OK:
+        // Valid command!
+        process_command( input );
+        break;
+
+    case COM_RX_STATUS_OVERFLOW:
+        // RX buffer overflow!
+        com_tx( "invalid command\r\n" );
+        break;
+
+    default:
+        // ...??
+        assert( false );
+        break;
+    }
+
+} /* handle_com_rx() */
+
+
+static void handle_tick( void )
+{
+    // Turn off the powerbar if the timeout has expired
+    if( s_timeout && powerbar_get_enabled() && powerbar_get_uptime() > TIMEOUT_MS )
+        powerbar_set_enabled( false );
+
+} /* handle_tick() */
+
+
+static void process_command( char const* cmd )
+{
+    // Helper macros
+    #define send_power_state()                                                  \
+        com_tx_fmt( "power: %s (%lu ms)\r\n",                                   \
+                    powerbar_get_enabled() ? "on" : "off",                      \
+                    powerbar_get_uptime() )
+    #define send_timeout_state()                                                \
+        com_tx_fmt( "timeout: %s (%lu ms)\r\n",                                 \
+                    s_timeout ? "on" : "off",                                   \
+                    TIMEOUT_MS )
+
+    // Check against all known commands
+    if( ! strcmp( cmd, "power" ) )
+    {
+        // Return current state
+        send_power_state();
+    }
+    else if( ! strcmp( cmd, "power on" ) )
+    {
+        // Turn the power on
+        powerbar_set_enabled( true );
+        send_power_state();
+    }
+    else if( ! strcmp( cmd, "power off" ) )
+    {
+        // Turn the power off
+        powerbar_set_enabled( false );
+        send_power_state();
+    }
+    else if( ! strcmp( cmd, "timeout" ) )
+    {
+        send_timeout_state();
+    }
+    else if( ! strcmp( cmd, "timeout on" ) )
+    {
+        s_timeout = true;
+        send_timeout_state();
+    }
+    else if( ! strcmp( cmd, "timeout off" ) )
+    {
+        s_timeout = false;
+        send_timeout_state();
+    }
+    else
+    {
+        // ...??
+        com_tx_fmt( "invalid command: %s\r\n", cmd );
+    }
+
+    // Cleanup
+    #undef send_power_state
+    #undef send_timeout_state
+
+} /* process_command() */
