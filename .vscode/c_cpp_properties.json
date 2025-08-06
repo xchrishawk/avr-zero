@@ -11,7 +11,7 @@
             ],
             "compilerPath": "/usr/bin/avr-gcc",
             "compilerArgs": [
-                "-mmcu=atmega328p",
+                "-mmcu=atmega2560",
                 "-Os"
             ],
             "cStandard": "c11",

@@ -8,6 +8,13 @@
 
 cmake_minimum_required(VERSION 3.22)
 
+# -- Check Device --
+
+if(NOT "${DEVICE_MCU}" STREQUAL "atmega328p")
+    message(STATUS "Skipping powerbar-switcher due to incorrect architecture.")
+    return()
+endif()
+
 # -- Executable Configuration --
 
 set(EXECUTABLE_NAME     powerbar-switcher)

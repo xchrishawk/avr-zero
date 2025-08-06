@@ -33,3 +33,4 @@ make_build_dir() {
 
 # Make all required directories
 make_build_dir atmega328p 16000000 9600
+make_build_dir atmega2560 16000000 9600

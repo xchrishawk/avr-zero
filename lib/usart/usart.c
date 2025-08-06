@@ -8,12 +8,14 @@
 
 /* -- Includes -- */
 
+#include <assert.h>
 #include <stdint.h>
 
 #include <avr/io.h>
 #include <util/setbaud.h>
 
 #include "zero/bit_ops.h"
+#include "zero/pinout.h"
 #include "zero/register.h"
 #include "zero/utility.h"
 
@@ -44,6 +46,16 @@
 #define PORT_UBRRL( _port )                                                     \
     ( * s_reg_tbl[ _port ].ubrrl )
 
+// Helper macros to validate arguments
+#define validate_data_bits( _data_bits )                                        \
+    assert( ( _data_bits ) < USART_DATA_BITS_COUNT )
+#define validate_parity( _parity )                                              \
+    assert( ( _parity ) < USART_PARITY_COUNT )
+#define validate_port( _port )                                                  \
+    assert( ( _port ) < USART_PORT_COUNT )
+#define validate_stop_bits( _stop_bits )                                        \
+    assert( ( _stop_bits ) < USART_STOP_BITS_COUNT )
+
 /* -- Constants -- */
 
 // Register lookup table for each USART port
@@ -58,7 +70,18 @@ static struct
 }
 const s_reg_tbl[] =
 {
-    DEFINE_REGISTERS( 0 )
+#if( _USART_PORT_COUNT > 0 )
+    DEFINE_REGISTERS( 0 ),
+#endif
+#if( _USART_PORT_COUNT > 1 )
+    DEFINE_REGISTERS( 1 ),
+#endif
+#if( _USART_PORT_COUNT > 2 )
+    DEFINE_REGISTERS( 2 ),
+#endif
+#if( _USART_PORT_COUNT > 3 )
+    DEFINE_REGISTERS( 3 ),
+#endif
 };
 
 // Ensure register table has an entry for every defined port
@@ -68,6 +91,8 @@ _Static_assert( array_count( s_reg_tbl ) == USART_PORT_COUNT, "s_reg_tbl must ha
 
 void usart_autoconfigure_baud( usart_port_t port )
 {
+    validate_port( port );
+
     PORT_UBRRH( port ) = UBRRH_VALUE;
     PORT_UBRRL( port ) = UBRRL_VALUE;
     #if( USE_2X )
@@ -81,6 +106,7 @@ void usart_autoconfigure_baud( usart_port_t port )
 
 bool usart_get_rx_enabled( usart_port_t port )
 {
+    validate_port( port );
     return( ( bool )is_bit_set( PORT_UCSRB( port ), RXEN0 ) );
 
 } /* usart_get_rx_enabled() */
@@ -88,6 +114,7 @@ bool usart_get_rx_enabled( usart_port_t port )
 
 bool usart_get_tx_enabled( usart_port_t port )
 {
+    validate_port( port );
     return( ( bool )is_bit_set( PORT_UCSRB( port ), TXEN0 ) );
 
 } /* usart_get_tx_enabled() */
@@ -95,6 +122,7 @@ bool usart_get_tx_enabled( usart_port_t port )
 
 uint8_t usart_read( usart_port_t port )
 {
+    validate_port( port );
     return( ( uint8_t )PORT_UDR( port ) );
 
 } /* usart_read() */
@@ -110,6 +138,8 @@ uint8_t usart_rx( usart_port_t port )
 
 size_t usart_rx_until( usart_port_t port, char terminator, char* buf, size_t buf_sz )
 {
+    validate_port( port );
+
     size_t count = 0;
     while( count < buf_sz )
     {
@@ -125,6 +155,9 @@ size_t usart_rx_until( usart_port_t port, char terminator, char* buf, size_t buf
 
 void usart_set_data_bits( usart_port_t port, usart_data_bits_t data_bits )
 {
+    validate_port( port );
+    validate_data_bits( data_bits );
+
     switch( data_bits )
     {
     case USART_DATA_BITS_5:
@@ -164,6 +197,7 @@ void usart_set_data_bits( usart_port_t port, usart_data_bits_t data_bits )
 
 void usart_set_data_empty_interrupt_enabled( usart_port_t port, bool enabled )
 {
+    validate_port( port );
     assign_bit( PORT_UCSRB( port ), UDRIE0, enabled );
 
 } /* usart_set_data_empty_interrupt_enabled() */
@@ -171,6 +205,9 @@ void usart_set_data_empty_interrupt_enabled( usart_port_t port, bool enabled )
 
 void usart_set_parity( usart_port_t port, usart_parity_t parity )
 {
+    validate_port( port );
+    validate_parity( parity );
+
     switch( parity )
     {
     case USART_PARITY_NONE:
@@ -200,6 +237,7 @@ void usart_set_parity( usart_port_t port, usart_parity_t parity )
 
 void usart_set_rx_complete_interrupt_enabled( usart_port_t port, bool enabled )
 {
+    validate_port( port );
     assign_bit( PORT_UCSRB( port ), RXCIE0, enabled );
 
 } /* usart_set_rx_complete_interrupt_enabled() */
@@ -207,6 +245,7 @@ void usart_set_rx_complete_interrupt_enabled( usart_port_t port, bool enabled )
 
 void usart_set_rx_enabled( usart_port_t port, bool enabled )
 {
+    validate_port( port );
     assign_bit( PORT_UCSRB( port ), RXEN0, enabled );
 
 } /* usart_set_rx_enabled() */
@@ -214,6 +253,9 @@ void usart_set_rx_enabled( usart_port_t port, bool enabled )
 
 void usart_set_stop_bits( usart_port_t port, usart_stop_bits_t stop_bits )
 {
+    validate_port( port );
+    validate_stop_bits( stop_bits );
+
     switch( stop_bits )
     {
     case USART_STOP_BITS_1:
@@ -233,6 +275,7 @@ void usart_set_stop_bits( usart_port_t port, usart_stop_bits_t stop_bits )
 
 void usart_set_tx_complete_interrupt_enabled( usart_port_t port, bool enabled )
 {
+    validate_port( port );
     assign_bit( PORT_UCSRB( port ), TXCIE0, enabled );
 
 } /* usart_set_tx_complete_interrupt_enabled() */
@@ -240,6 +283,7 @@ void usart_set_tx_complete_interrupt_enabled( usart_port_t port, bool enabled )
 
 void usart_set_tx_enabled( usart_port_t port, bool enabled )
 {
+    validate_port( port );
     assign_bit( PORT_UCSRB( port ), TXEN0, enabled );
 
 } /* usart_set_tx_enabled() */
@@ -268,6 +312,7 @@ void usart_tx_string( usart_port_t port, char const* str )
 
 void usart_wait_data_empty( usart_port_t port )
 {
+    validate_port( port );
     wait_bit_set( PORT_UCSRA( port ), UDRE0 );
 
 } /* usart_wait_data_empty() */
@@ -275,6 +320,7 @@ void usart_wait_data_empty( usart_port_t port )
 
 void usart_wait_rx_complete( usart_port_t port )
 {
+    validate_port( port );
     wait_bit_set( PORT_UCSRA( port ), RXC0 );
 
 } /* usart_wait_rx_complete() */
@@ -282,6 +328,7 @@ void usart_wait_rx_complete( usart_port_t port )
 
 void usart_wait_tx_complete( usart_port_t port )
 {
+    validate_port( port );
     wait_bit_set( PORT_UCSRA( port ), TXC0 );
 
 } /* usart_wait_tx_complete() */
@@ -289,6 +336,7 @@ void usart_wait_tx_complete( usart_port_t port )
 
 void usart_write( usart_port_t port, uint8_t byte )
 {
+    validate_port( port );
     PORT_UDR( port ) = byte;
 
 } /* usart_write() */

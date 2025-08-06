@@ -142,12 +142,12 @@ void lcd1602a_cfg_default( lcd1602a_cfg_t* cfg )
     memset( cfg, 0, sizeof( *cfg ) );
 
     // Assign GPIO pins
-    cfg->d4_pin = GPIO_PIN_ARDUINO_D4;
-    cfg->d5_pin = GPIO_PIN_ARDUINO_D5;
-    cfg->d6_pin = GPIO_PIN_ARDUINO_D6;
-    cfg->d7_pin = GPIO_PIN_ARDUINO_D7;
-    cfg->rs_pin = GPIO_PIN_ARDUINO_D8;
-    cfg->e_pin  = GPIO_PIN_ARDUINO_D9;
+    cfg->d4_pin = GPIO_PIN_ARDUINO_D04;
+    cfg->d5_pin = GPIO_PIN_ARDUINO_D05;
+    cfg->d6_pin = GPIO_PIN_ARDUINO_D06;
+    cfg->d7_pin = GPIO_PIN_ARDUINO_D07;
+    cfg->rs_pin = GPIO_PIN_ARDUINO_D08;
+    cfg->e_pin  = GPIO_PIN_ARDUINO_D09;
 
     // Assign ADC channels
     cfg->btn_chnl = ADC_CHANNEL_A0;
@@ -199,12 +199,12 @@ void lcd1602a_init( lcd1602a_cfg_t const* cfg )
 {
     // Set configuration for all GPIO pins
     gpio_config_t const gpio_cfg = { GPIO_DIR_OUT, GPIO_STATE_LOW };
-    gpio_configure( cfg->d4_pin, &gpio_cfg );
-    gpio_configure( cfg->d5_pin, &gpio_cfg );
-    gpio_configure( cfg->d6_pin, &gpio_cfg );
-    gpio_configure( cfg->d7_pin, &gpio_cfg );
-    gpio_configure( cfg->rs_pin, &gpio_cfg );
-    gpio_configure( cfg->e_pin,  &gpio_cfg );
+    gpio_set_config( cfg->d4_pin, &gpio_cfg );
+    gpio_set_config( cfg->d5_pin, &gpio_cfg );
+    gpio_set_config( cfg->d6_pin, &gpio_cfg );
+    gpio_set_config( cfg->d7_pin, &gpio_cfg );
+    gpio_set_config( cfg->rs_pin, &gpio_cfg );
+    gpio_set_config( cfg->e_pin,  &gpio_cfg );
 
     // Initialize and enable ADC if it's not already initialized
     adc_init();

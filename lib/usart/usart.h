@@ -15,6 +15,8 @@
 #include <stddef.h>
 #include <stdint.h>
 
+#include "zero/pinout.h"
+
 /* -- Types -- */
 
 /**
@@ -29,6 +31,7 @@ enum
     USART_DATA_BITS_6,              /**< 6 data bits per frame.                         */
     USART_DATA_BITS_7,              /**< 7 data bits per frame.                         */
     USART_DATA_BITS_8,              /**< 8 data bits per frame.                         */
+
     USART_DATA_BITS_COUNT,          /**< Number of valid data bits settings.            */
 };
 
@@ -42,6 +45,7 @@ enum
     USART_PARITY_NONE,              /**< No parity is enabled.                          */
     USART_PARITY_EVEN,              /**< Even parity is enabled.                        */
     USART_PARITY_ODD,               /**< Odd parity is enabled.                         */
+
     USART_PARITY_COUNT,             /**< Number of valid parity settings.               */
 };
 
@@ -52,9 +56,27 @@ enum
 typedef uint8_t usart_port_t;
 enum
 {
+#if( _USART_PORT_COUNT > 0 )
     USART_PORT_0,                   /**< USART port 0.                                  */
+#endif
+#if( _USART_PORT_COUNT > 1 )
+    USART_PORT_1,                   /**< USART port 1.                                  */
+#endif
+#if( _USART_PORT_COUNT > 2 )
+    USART_PORT_2,                   /**< USART port 2.                                  */
+#endif
+#if( _USART_PORT_COUNT > 3 )
+    USART_PORT_3,                   /**< USART port 3.                                  */
+#endif
+
     USART_PORT_COUNT,               /**< Number of valid USART ports.                   */
+
+    USART_PORT_INVALID              /**< Invalid, unspecified, or unknown USART port.   */
+        = USART_PORT_COUNT
 };
+
+// Ensure port count is correct
+_Static_assert( USART_PORT_COUNT == _USART_PORT_COUNT, "USART port count is incorrect!" );
 
 /**
  * @typedef usart_stop_bits_t
@@ -65,6 +87,7 @@ enum
 {
     USART_STOP_BITS_1,              /**< Each frame has 1 stop bit.                     */
     USART_STOP_BITS_2,              /**< Each frame has 2 stop bits.                    */
+
     USART_STOP_BITS_COUNT,          /**< Number of valid stop bits settings.            */
 };
 

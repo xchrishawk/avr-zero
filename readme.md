@@ -27,5 +27,11 @@ avrdude -c arduino -p [mcu] -P [port] -b [bitrate] -U flash:w:[filename].ihex
 For example, on my computer, to upload `hello-world.ihex` to the Uno 3, I use the command:
 
 ```
-avrdude -c arduino -p m328p -P COM7 -b 115200 -U flash:w:hello-world.ihex
+avrdude -v -c arduino -p m328p -P COM6 -b 115200 -U flash:w:hello-world.ihex -D
+```
+
+For the Arduino Mega 2560:
+
+```
+avrdude -v -c wiring -p atmega2560 -P COM7 -b 115200 -U flash:w:blink.ihex -D
 ```

@@ -16,7 +16,7 @@
 
 /* -- Constants -- */
 
-#define DELAY   ( 100 )
+#define DELAY   ( 25 )
 
 /* -- Procedures -- */
 
