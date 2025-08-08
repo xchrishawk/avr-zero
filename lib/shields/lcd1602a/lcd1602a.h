@@ -6,8 +6,8 @@
  * @date    2025-07-22
  */
 
-#if !defined( LCD1602A_LCD1602A_H )
-#define LCD1602A_LCD1602A_H
+#if !defined( SHIELDS_LCD1602A_LCD1602A_H )
+#define SHIELDS_LCD1602A_LCD1602A_H
 
 /* -- Includes -- */
 
@@ -136,4 +136,4 @@ void lcd1602a_write_lines( lcd1602a_cfg_t const* cfg, char const* s1, char const
  */
 void lcd1602a_write_string( lcd1602a_cfg_t const* cfg, char const* s );
 
-#endif /* !defined( LCD1602A_LCD1602A_H ) */
+#endif /* !defined( SHIELDS_LCD1602A_LCD1602A_H ) */
