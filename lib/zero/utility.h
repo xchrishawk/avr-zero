@@ -23,6 +23,20 @@
     ( sizeof( _a ) / sizeof( _a[ 0 ] ) )
 
 /**
+ * @def     stringize
+ * @brief   Returns a string representation of the argument.
+ */
+#define stringize( _x ) \
+    # _x
+
+/**
+ * @def     stringize_value
+ * @brief   Returns a string representation of the *value* of the argument.
+ */
+#define stringize_value( _x ) \
+    stringize( _x )
+
+/**
  * @def     validate_enum
  * @brief   Asserts that the specified enum variable is below a maximum value.
  */

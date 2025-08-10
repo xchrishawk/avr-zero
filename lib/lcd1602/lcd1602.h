@@ -22,19 +22,25 @@
  * @def     LCD1602_PIN_COUNT
  * @brief   Total number of GPIO pins for the LCD1602 module.
  */
-#define LCD1602_PIN_COUNT       ( 11 )
+#define LCD1602_PIN_COUNT       11
 
 /**
  * @def     LCD1602_LINE_1_ADDR
  * @brief   DDRAM address for the beginning of the LCD's first line.
  */
-#define LCD1602_LINE_1_ADDRESS  ( 0x00 )
+#define LCD1602_LINE_1_ADDRESS  0x00
 
 /**
  * @def     LCD1602_LINE_2_ADDR
  * @brief   DDRAM address for the beginning of the LCD's second line.
  */
-#define LCD1602_LINE_2_ADDRESS  ( 0x40 )
+#define LCD1602_LINE_2_ADDRESS  0x40
+
+/**
+ * @def     LCD1602_LINE_LENGTH
+ * @brief   Maximum number of displayed characters per line.
+ */
+#define LCD1602_LINE_LENGTH     16
 
 /* -- Types -- */
 

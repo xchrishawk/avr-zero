@@ -78,6 +78,7 @@ add_subdirectory(${PROJECT_LIBRARY_DIR}/zero)
 add_subdirectory(${PROJECT_LIBRARY_DIR}/shields/hw262)
 
 # Executables
+add_subdirectory(${PROJECT_EXECUTABLE_DIR}/adc-demo)
 add_subdirectory(${PROJECT_EXECUTABLE_DIR}/blink)
 add_subdirectory(${PROJECT_EXECUTABLE_DIR}/hw262-demo)
 add_subdirectory(${PROJECT_EXECUTABLE_DIR}/lcd1602-demo)
