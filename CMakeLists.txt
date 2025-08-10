@@ -76,7 +76,6 @@ add_subdirectory(${PROJECT_LIBRARY_DIR}/zero)
 
 # Shield-specific libraries
 add_subdirectory(${PROJECT_LIBRARY_DIR}/shields/hw262)
-add_subdirectory(${PROJECT_LIBRARY_DIR}/shields/lcd1602a)
 
 # Executables
 add_subdirectory(${PROJECT_EXECUTABLE_DIR}/blink)
