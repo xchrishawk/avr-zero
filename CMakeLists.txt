@@ -70,6 +70,7 @@ add_compile_definitions(
 # Generic libraries
 add_subdirectory(${PROJECT_LIBRARY_DIR}/adc)
 add_subdirectory(${PROJECT_LIBRARY_DIR}/gpio)
+add_subdirectory(${PROJECT_LIBRARY_DIR}/lcd1602)
 add_subdirectory(${PROJECT_LIBRARY_DIR}/usart)
 add_subdirectory(${PROJECT_LIBRARY_DIR}/zero)
 
@@ -80,4 +81,5 @@ add_subdirectory(${PROJECT_LIBRARY_DIR}/shields/lcd1602a)
 # Executables
 add_subdirectory(${PROJECT_EXECUTABLE_DIR}/blink)
 add_subdirectory(${PROJECT_EXECUTABLE_DIR}/hw262-demo)
+add_subdirectory(${PROJECT_EXECUTABLE_DIR}/lcd1602-demo)
 add_subdirectory(${PROJECT_EXECUTABLE_DIR}/powerbar-switcher)
