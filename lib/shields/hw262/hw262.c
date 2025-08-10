@@ -39,10 +39,9 @@ _Static_assert( array_count( s_led_pin_tbl ) == HW262_LED_COUNT, "LED pin table 
 
 /* -- Macros -- */
 
-#define validate_button( _button )                                              \
-    assert( ( _button ) < HW262_BUTTON_COUNT )
-#define validate_led( _led )                                                    \
-    assert( ( _led ) < HW262_LED_COUNT )
+// Helper macros to validate enums
+#define validate_button( _button )      validate_enum( _button, HW262_BUTTON_COUNT )
+#define validate_led( _led )            validate_enum( _led,    HW262_LED_COUNT )
 
 /* -- Procedures -- */
 

@@ -47,14 +47,10 @@
     ( * s_reg_tbl[ _port ].ubrrl )
 
 // Helper macros to validate arguments
-#define validate_data_bits( _data_bits )                                        \
-    assert( ( _data_bits ) < USART_DATA_BITS_COUNT )
-#define validate_parity( _parity )                                              \
-    assert( ( _parity ) < USART_PARITY_COUNT )
-#define validate_port( _port )                                                  \
-    assert( ( _port ) < USART_PORT_COUNT )
-#define validate_stop_bits( _stop_bits )                                        \
-    assert( ( _stop_bits ) < USART_STOP_BITS_COUNT )
+#define validate_data_bits( _data_bits )    validate_enum( _data_bits,  USART_DATA_BITS_COUNT )
+#define validate_parity( _parity )          validate_enum( _parity,     USART_PARITY_COUNT )
+#define validate_port( _port )              validate_enum( _port,       USART_PORT_COUNT )
+#define validate_stop_bits( _stop_bits )    validate_enum( _stop_bits,  USART_STOP_BITS_COUNT )
 
 /* -- Constants -- */
 

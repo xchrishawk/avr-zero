@@ -30,12 +30,9 @@
       REGISTER_ADDR( PIN ## _port ),  ( 1 << PIN ## _port ## _pin ) }
 
 // Helper macros to validate arguments
-#define validate_pin( _pin )                                                    \
-    assert( ( _pin ) < GPIO_PIN_COUNT )
-#define validate_dir( _dir )                                                    \
-    assert( ( _dir ) < GPIO_DIR_COUNT )
-#define validate_state( _state )                                                \
-    assert( ( _state ) < GPIO_STATE_COUNT )
+#define validate_pin( _pin )        validate_enum( _pin,    GPIO_PIN_COUNT )
+#define validate_dir( _dir )        validate_enum( _dir,    GPIO_DIR_COUNT )
+#define validate_state( _state )    validate_enum( _state,  GPIO_STATE_COUNT )
 
 /* -- Constants -- */
 

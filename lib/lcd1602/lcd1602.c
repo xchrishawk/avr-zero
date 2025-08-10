@@ -16,6 +16,7 @@
 
 #include "gpio/gpio.h"
 #include "zero/bit_ops.h"
+#include "zero/utility.h"
 
 #include "lcd1602.h"
 
@@ -40,10 +41,9 @@ enum
 
 /* -- Macros -- */
 
-#define validate_autoshift( _autoshift )                                        \
-    assert( ( _autoshift ) < LCD1602_AUTOSHIFT_COUNT )
-#define validate_cursor( _cursor )                                              \
-    assert( ( _cursor ) < LCD1602_CURSOR_COUNT )
+// Helper macros to validate arguments
+#define validate_autoshift( _autoshift )    validate_enum( _autoshift,  LCD1602_AUTOSHIFT_COUNT )
+#define validate_cursor( _cursor )          validate_enum( _cursor,     LCD1602_CURSOR_COUNT )
 
 /* -- Procedure Prototypes -- */
 
