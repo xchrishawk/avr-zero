@@ -1,6 +1,6 @@
 /**
- * @file    lcd1602.c
- * @brief   Implementation for the lcd1602 library.
+ * @file    lcdtext.c
+ * @brief   Implementation for the lcdtext library.
  *
  * @author  Chris Vig (chris@invictus.so)
  * @date    2025-08-08
@@ -18,15 +18,15 @@
 #include "zero/bit_ops.h"
 #include "zero/utility.h"
 
-#include "lcd1602.h"
+#include "lcdtext.h"
 
 /* -- Types -- */
 
 /**
  * @typedef lcd_p
- * @brief   Convenience typedef for a `const` pointer to a `lcd1602_t` struct.
+ * @brief   Convenience typedef for a `const` pointer to a `lcdtext_t` struct.
  */
-typedef lcd1602_t const * lcd_p;
+typedef lcdtext_t const * lcd_p;
 
 /**
  * @typedef lcd_register_t
@@ -42,8 +42,8 @@ enum
 /* -- Macros -- */
 
 // Helper macros to validate arguments
-#define validate_autoshift( _autoshift )    validate_enum( _autoshift,  LCD1602_AUTOSHIFT_COUNT )
-#define validate_cursor( _cursor )          validate_enum( _cursor,     LCD1602_CURSOR_COUNT )
+#define validate_autoshift( _autoshift )    validate_enum( _autoshift,  LCDTEXT_AUTOSHIFT_COUNT )
+#define validate_cursor( _cursor )          validate_enum( _cursor,     LCDTEXT_CURSOR_COUNT )
 
 /* -- Procedure Prototypes -- */
 
@@ -109,7 +109,7 @@ static void strobe_enable( lcd_p lcd );
 
 /* -- Procedures -- */
 
-void lcd1602_clear( lcd1602_t const * lcd )
+void lcdtext_clear( lcdtext_t const * lcd )
 {
     static uint8_t const COMMAND = 0x01;
 
@@ -117,24 +117,10 @@ void lcd1602_clear( lcd1602_t const * lcd )
     send_data( lcd, COMMAND );
     delay_long();
 
-} /* lcd1602_clear() */
+} /* lcdtext_clear() */
 
 
-void lcd1602_go_line_1( lcd1602_t const * lcd )
-{
-    lcd1602_set_address( lcd, LCD1602_LINE_1_ADDRESS );
-
-} /* lcd1602_go_line_1() */
-
-
-void lcd1602_go_line_2( lcd1602_t const * lcd )
-{
-    lcd1602_set_address( lcd, LCD1602_LINE_2_ADDRESS );
-
-} /* lcd1602_go_line_2() */
-
-
-void lcd1602_home( lcd1602_t const * lcd )
+void lcdtext_home( lcdtext_t const * lcd )
 {
     static uint8_t const COMMAND = 0x02;
 
@@ -142,14 +128,14 @@ void lcd1602_home( lcd1602_t const * lcd )
     send_data( lcd, COMMAND );
     delay_long();
 
-} /* lcd1602_home() */
+} /* lcdtext_home() */
 
 
-void lcd1602_init( lcd1602_t const * lcd )
+void lcdtext_init( lcdtext_t const * lcd )
 {
     // Configure all GPIO pins
     gpio_config_t config = { GPIO_DIR_OUT, GPIO_STATE_LOW };
-    for( uint8_t idx = 0; idx < LCD1602_PIN_COUNT; idx++ )
+    for( uint8_t idx = 0; idx < LCDTEXT_PIN_COUNT; idx++ )
     {
         gpio_pin_t pin = lcd->pins.all[ idx ];
         if( pin != GPIO_PIN_INVALID )
@@ -160,16 +146,16 @@ void lcd1602_init( lcd1602_t const * lcd )
     send_function_select( lcd );
 
     // Set LCD configuration to reasonable defaults
-    lcd1602_set_display( lcd, true, LCD1602_CURSOR_NONE );
-    lcd1602_set_autoshift( lcd, LCD1602_AUTOSHIFT_CURSOR_RIGHT );
+    lcdtext_set_display( lcd, true, LCDTEXT_CURSOR_NONE );
+    lcdtext_set_autoshift( lcd, LCDTEXT_AUTOSHIFT_CURSOR_RIGHT );
 
     // CLear any display contents
-    lcd1602_clear( lcd );
+    lcdtext_clear( lcd );
 
-} /* lcd1602_init() */
+} /* lcdtext_init() */
 
 
-void lcd1602_set_address( lcd1602_t const * lcd, uint8_t addr )
+void lcdtext_set_address( lcdtext_t const * lcd, uint8_t addr )
 {
     uint8_t command = 0x80 | ( 0x7F & addr );
 
@@ -177,25 +163,25 @@ void lcd1602_set_address( lcd1602_t const * lcd, uint8_t addr )
     send_data( lcd, command );
     delay_short();
 
-} /* lcd1602_set_address() */
+} /* lcdtext_set_address() */
 
 
-void lcd1602_set_autoshift( lcd1602_t const * lcd, lcd1602_autoshift_t autoshift )
+void lcdtext_set_autoshift( lcdtext_t const * lcd, lcdtext_autoshift_t autoshift )
 {
     validate_autoshift( autoshift );
 
     uint8_t command = 0x04;
     switch( autoshift )
     {
-    case LCD1602_AUTOSHIFT_CURSOR_RIGHT:
+    case LCDTEXT_AUTOSHIFT_CURSOR_RIGHT:
         command |= 0x02;
         break;
-    case LCD1602_AUTOSHIFT_CURSOR_LEFT:
+    case LCDTEXT_AUTOSHIFT_CURSOR_LEFT:
         break;
-    case LCD1602_AUTOSHIFT_DISPLAY_RIGHT:
+    case LCDTEXT_AUTOSHIFT_DISPLAY_RIGHT:
         command |= 0x01;
         break;
-    case LCD1602_AUTOSHIFT_DISPLAY_LEFT:
+    case LCDTEXT_AUTOSHIFT_DISPLAY_LEFT:
         command |= 0x03;
         break;
     default:
@@ -207,26 +193,26 @@ void lcd1602_set_autoshift( lcd1602_t const * lcd, lcd1602_autoshift_t autoshift
     send_data( lcd, command );
     delay_short();
 
-} /* lcd1602_set_autoshift() */
+} /* lcdtext_set_autoshift() */
 
 
-void lcd1602_set_display( lcd1602_t const * lcd, bool display_on, lcd1602_cursor_t cursor )
+void lcdtext_set_display( lcdtext_t const * lcd, bool display_on, lcdtext_cursor_t cursor )
 {
     validate_cursor( cursor );
 
     uint8_t command = 0x08;
     assign_bit( command, 2, display_on );
-    assign_bit( command, 1, cursor == LCD1602_CURSOR_UNDERSCORE || cursor == LCD1602_CURSOR_BOTH );
-    assign_bit( command, 0, cursor == LCD1602_CURSOR_BOX        || cursor == LCD1602_CURSOR_BOTH );
+    assign_bit( command, 1, cursor == LCDTEXT_CURSOR_UNDERSCORE || cursor == LCDTEXT_CURSOR_BOTH );
+    assign_bit( command, 0, cursor == LCDTEXT_CURSOR_BOX        || cursor == LCDTEXT_CURSOR_BOTH );
 
     select_register( lcd, LCD_REGISTER_INSTRUCTION );
     send_data( lcd, command );
     delay_short();
 
-} /* lcd1602_set_display() */
+} /* lcdtext_set_display() */
 
 
-void lcd1602_shift_left( lcd1602_t const * lcd )
+void lcdtext_shift_left( lcdtext_t const * lcd )
 {
     static uint8_t const COMMAND = 0x18;
 
@@ -234,10 +220,10 @@ void lcd1602_shift_left( lcd1602_t const * lcd )
     send_data( lcd, COMMAND );
     delay_short();
 
-} /* lcd1602_shift_left() */
+} /* lcdtext_shift_left() */
 
 
-void lcd1602_shift_right( lcd1602_t const * lcd )
+void lcdtext_shift_right( lcdtext_t const * lcd )
 {
     static uint8_t const COMMAND = 0x1C;
 
@@ -245,17 +231,17 @@ void lcd1602_shift_right( lcd1602_t const * lcd )
     send_data( lcd, COMMAND );
     delay_short();
 
-} /* lcd1602_shift_right() */
+} /* lcdtext_shift_right() */
 
 
-void lcd1602_write( lcd1602_t const * lcd, char const * str )
+void lcdtext_write( lcdtext_t const * lcd, char const * str )
 {
-    lcd1602_write_delay( lcd, str, 0 );
+    lcdtext_write_delay( lcd, str, 0 );
 
-} /* lcd1602_write() */
+} /* lcdtext_write() */
 
 
-void lcd1602_write_delay( lcd1602_t const * lcd, char const * str, uint16_t delay_ms )
+void lcdtext_write_delay( lcdtext_t const * lcd, char const * str, uint16_t delay_ms )
 {
     select_register( lcd, LCD_REGISTER_DATA );
     while( * str )
@@ -265,24 +251,24 @@ void lcd1602_write_delay( lcd1602_t const * lcd, char const * str, uint16_t dela
         delay_variable( delay_ms );
     }
 
-} /* lcd1602_write_delay() */
+} /* lcdtext_write_delay() */
 
 
-void lcd1602_write_lines( lcd1602_t const * lcd, char const * line1, char const * line2 )
+void lcdtext_1602_write_lines( lcdtext_t const * lcd, char const * line1, char const * line2 )
 {
-    lcd1602_clear( lcd );
+    lcdtext_clear( lcd );
     if( line1 )
     {
         // Already at the correct position
-        lcd1602_write( lcd, line1 );
+        lcdtext_write( lcd, line1 );
     }
     if( line2 )
     {
-        lcd1602_set_address( lcd, LCD1602_LINE_2_ADDRESS );
-        lcd1602_write( lcd, line2 );
+        lcdtext_set_address( lcd, LCDTEXT_LINE_2_ADDRESS );
+        lcdtext_write( lcd, line2 );
     }
 
-} /* lcd1602_write_lines() */
+} /* lcdtext_write_lines() */
 
 
 static void delay_long( void )

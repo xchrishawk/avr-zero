@@ -17,14 +17,14 @@
 #include <util/delay.h>
 
 #include "adc/adc.h"
-#include "lcd1602/lcd1602.h"
+#include "lcdtext/lcdtext.h"
 #include "zero/utility.h"
 
 /* -- Variables -- */
 
 // LCD struct
-static lcd1602_t s_lcd;
-#define lcd ( ( lcd1602_t const * ) & s_lcd )
+static lcdtext_t s_lcd;
+#define lcd ( ( lcdtext_t const * ) & s_lcd )
 
 // Most recent converted value
 static uint16_t value = 0;
@@ -41,7 +41,7 @@ int main( void )
     init_lcd();
 
     // Print a hello message
-    lcd1602_write_lines( lcd, "ADC Demo", NULL );
+    lcdtext_write( lcd, "ADC Demo" );
 
     // Initialize and configure ADC
     adc_init();
@@ -59,7 +59,7 @@ int main( void )
     adc_start();
 
     // Main loop
-    char buf[ LCD1602_LINE_LENGTH + 1 ];
+    char buf[ LCDTEXT_2004_LINE_LENGTH + 1 ];
     while( true )
     {
         // Delay some reasonable value
@@ -71,9 +71,9 @@ int main( void )
         sei();
 
         // Print to the LCD
-        sprintf( buf, "%-" stringize_value( LCD1602_LINE_LENGTH ) "d", value );
-        lcd1602_go_line_2( lcd );
-        lcd1602_write( lcd, buf );
+        sprintf( buf, "%-" stringize_value( LCDTEXT_2004_LINE_LENGTH ) "d", value );
+        lcdtext_set_address( lcd, LCDTEXT_LINE_2_ADDRESS );
+        lcdtext_write( lcd, buf );
     }
 
 } /* main() */
@@ -100,7 +100,7 @@ static void init_lcd( void )
     s_lcd.pins.d7           = GPIO_PIN_ARDUINO_D09;
 
     // Initialize LCD
-    lcd1602_init( & s_lcd );
+    lcdtext_init( & s_lcd );
 
 } /* init_lcd() */
 

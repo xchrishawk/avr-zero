@@ -12,7 +12,7 @@ cmake_minimum_required(VERSION 3.22)
 
 set(EXECUTABLE_NAME     adc-demo)
 set(EXECUTABLE_SOURCE   main.c)
-set(EXECUTABLE_LIBS     adc lcd1602 zero)
+set(EXECUTABLE_LIBS     adc lcdtext zero)
 
 # -- Set Up Project --
 

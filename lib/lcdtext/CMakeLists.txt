@@ -1,6 +1,6 @@
 #
 # @file     CMakeLists.txt
-# @brief    CMake configuration for the lcd1602 library.
+# @brief    CMake configuration for the lcdtext library.
 #
 # @author   Chris Vig (chris@invictus.so)
 # @date     2025-08-08
@@ -10,8 +10,8 @@ cmake_minimum_required(VERSION 3.22)
 
 # -- Library Configuration --
 
-set(LIBRARY_NAME     lcd1602)
-set(LIBRARY_SOURCE   lcd1602.c lcd1602.h)
+set(LIBRARY_NAME     lcdtext)
+set(LIBRARY_SOURCE   lcdtext.c lcdtext.h)
 set(LIBRARY_LIBS     gpio zero)
 
 # -- Set Up Project --
