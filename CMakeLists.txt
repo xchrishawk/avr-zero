@@ -76,12 +76,14 @@ add_subdirectory(${PROJECT_LIBRARY_DIR}/usart)
 add_subdirectory(${PROJECT_LIBRARY_DIR}/zero)
 
 # Shield-specific libraries
-add_subdirectory(${PROJECT_LIBRARY_DIR}/shields/hw262)
+add_subdirectory(${PROJECT_LIBRARY_DIR}/shield/hw262)
+add_subdirectory(${PROJECT_LIBRARY_DIR}/shield/lcd1602a)
 
 # Executables
 add_subdirectory(${PROJECT_EXECUTABLE_DIR}/adc-demo)
 add_subdirectory(${PROJECT_EXECUTABLE_DIR}/blink)
-add_subdirectory(${PROJECT_EXECUTABLE_DIR}/hw262-demo)
 add_subdirectory(${PROJECT_EXECUTABLE_DIR}/lcdtext-demo)
 add_subdirectory(${PROJECT_EXECUTABLE_DIR}/powerbar-switcher)
 add_subdirectory(${PROJECT_EXECUTABLE_DIR}/scratchpad)
+add_subdirectory(${PROJECT_EXECUTABLE_DIR}/shield-hw262-demo)
+add_subdirectory(${PROJECT_EXECUTABLE_DIR}/shield-lcd1602a-demo)

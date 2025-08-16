@@ -12,7 +12,7 @@
 
 #include <util/delay.h>
 
-#include "shields/hw262/hw262.h"
+#include "shield/hw262/shield-hw262.h"
 
 /* -- Procedures -- */
 

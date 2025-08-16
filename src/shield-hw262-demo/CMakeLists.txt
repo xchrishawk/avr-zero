@@ -1,18 +1,18 @@
 #
 # @file     CMakeLists.txt
-# @brief    CMake configuration for the scratchpad executable.
+# @brief    CMake configuration for the shield-hw262-demo executable.
 #
 # @author   Chris Vig (chris@invictus.so)
-# @date     2025-08-10
+# @date     2025-08-07
 #
 
 cmake_minimum_required(VERSION 3.22)
 
 # -- Executable Configuration --
 
-set(EXECUTABLE_NAME     scratchpad)
+set(EXECUTABLE_NAME     shield-hw262-demo)
 set(EXECUTABLE_SOURCE   main.c)
-set(EXECUTABLE_LIBS     zero)
+set(EXECUTABLE_LIBS     shield-hw262)
 
 # -- Set Up Project --
 

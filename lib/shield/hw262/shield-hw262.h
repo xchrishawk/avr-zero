@@ -1,13 +1,13 @@
 /**
- * @file    hw262.h
+ * @file    shield-hw262.h
  * @brief   Header for the hw262 library.
  *
  * @author  Chris Vig (chris@invictus.so)
  * @date    2025-08-07
  */
 
-#if !defined( SHIELDS_HW262_HW262_H )
-#define SHIELDS_HW262_HW262_H
+#if !defined( SHIELD_HW262_SHIELD_HW262_H )
+#define SHIELD_HW262_SHIELD_HW262_H
 
 /* -- Includes -- */
 
@@ -79,4 +79,4 @@ gpio_pin_t hw262_led_pin( hw262_led_t led );
  */
 void hw262_led_set( hw262_led_t led, bool on );
 
-#endif /* !defined( SHIELDS_HW262_HW262_H ) */
+#endif /* !defined( SHIELD_HW262_SHIELD_HW262_H ) */

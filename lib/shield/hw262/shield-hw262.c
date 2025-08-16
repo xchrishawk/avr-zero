@@ -1,5 +1,5 @@
 /**
- * @file    hw262.c
+ * @file    shield-hw262.c
  * @brief   Implementation for the hw262 library.
  *
  * @author  Chris Vig (chris@invictus.so)
@@ -14,7 +14,7 @@
 #include "gpio/gpio.h"
 #include "zero/utility.h"
 
-#include "hw262.h"
+#include "shield-hw262.h"
 
 /* -- Constants -- */
 
