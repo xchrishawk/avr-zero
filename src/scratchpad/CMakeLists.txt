@@ -12,7 +12,7 @@ cmake_minimum_required(VERSION 3.22)
 
 set(EXECUTABLE_NAME     scratchpad)
 set(EXECUTABLE_SOURCE   main.c)
-set(EXECUTABLE_LIBS     zero)
+set(EXECUTABLE_LIBS     eeprom lcdtext zero)
 
 # -- Set Up Project --
 

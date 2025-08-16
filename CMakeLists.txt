@@ -69,6 +69,7 @@ add_compile_definitions(
 
 # Generic libraries
 add_subdirectory(${PROJECT_LIBRARY_DIR}/adc)
+add_subdirectory(${PROJECT_LIBRARY_DIR}/eeprom)
 add_subdirectory(${PROJECT_LIBRARY_DIR}/gpio)
 add_subdirectory(${PROJECT_LIBRARY_DIR}/lcdtext)
 add_subdirectory(${PROJECT_LIBRARY_DIR}/usart)
