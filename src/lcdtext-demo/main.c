@@ -208,43 +208,43 @@ static void demo_set_address( lcdtext_t const * lcd )
     {
         lcdtext_clear( lcd );
 
-        lcdtext_set_address( lcd, LCDTEXT_LINE_1_ADDRESS + 0 );
+        lcdtext_set_address( lcd, LCDTEXT_ADDRESS_LINE_1 + 0 );
         lcdtext_write( lcd, "0" ),
         _delay_ms( DELAY_MS );
 
-        lcdtext_set_address( lcd, LCDTEXT_LINE_2_ADDRESS + 0 );
+        lcdtext_set_address( lcd, LCDTEXT_ADDRESS_LINE_2 + 0 );
         lcdtext_write( lcd, "1" ),
         _delay_ms( DELAY_MS );
 
-        lcdtext_set_address( lcd, LCDTEXT_LINE_1_ADDRESS + 1 );
+        lcdtext_set_address( lcd, LCDTEXT_ADDRESS_LINE_1 + 1 );
         lcdtext_write( lcd, "2" ),
         _delay_ms( DELAY_MS );
 
-        lcdtext_set_address( lcd, LCDTEXT_LINE_2_ADDRESS + 1 );
+        lcdtext_set_address( lcd, LCDTEXT_ADDRESS_LINE_2 + 1 );
         lcdtext_write( lcd, "3" ),
         _delay_ms( DELAY_MS );
 
-        lcdtext_set_address( lcd, LCDTEXT_LINE_1_ADDRESS + 2 );
+        lcdtext_set_address( lcd, LCDTEXT_ADDRESS_LINE_1 + 2 );
         lcdtext_write( lcd, "4" ),
         _delay_ms( DELAY_MS );
 
-        lcdtext_set_address( lcd, LCDTEXT_LINE_2_ADDRESS + 2 );
+        lcdtext_set_address( lcd, LCDTEXT_ADDRESS_LINE_2 + 2 );
         lcdtext_write( lcd, "5" ),
         _delay_ms( DELAY_MS );
 
-        lcdtext_set_address( lcd, LCDTEXT_LINE_1_ADDRESS + 3 );
+        lcdtext_set_address( lcd, LCDTEXT_ADDRESS_LINE_1 + 3 );
         lcdtext_write( lcd, "6" ),
         _delay_ms( DELAY_MS );
 
-        lcdtext_set_address( lcd, LCDTEXT_LINE_2_ADDRESS + 3 );
+        lcdtext_set_address( lcd, LCDTEXT_ADDRESS_LINE_2 + 3 );
         lcdtext_write( lcd, "7" ),
         _delay_ms( DELAY_MS );
 
-        lcdtext_set_address( lcd, LCDTEXT_LINE_1_ADDRESS + 4 );
+        lcdtext_set_address( lcd, LCDTEXT_ADDRESS_LINE_1 + 4 );
         lcdtext_write( lcd, "8" ),
         _delay_ms( DELAY_MS );
 
-        lcdtext_set_address( lcd, LCDTEXT_LINE_2_ADDRESS + 4 );
+        lcdtext_set_address( lcd, LCDTEXT_ADDRESS_LINE_2 + 4 );
         lcdtext_write( lcd, "9" ),
         _delay_ms( DELAY_MS );
     }

@@ -72,7 +72,7 @@ int main( void )
 
         // Print to the LCD
         sprintf( buf, "%-" stringize_value( LCDTEXT_2004_LINE_LENGTH ) "d", value );
-        lcdtext_set_address( lcd, LCDTEXT_LINE_2_ADDRESS );
+        lcdtext_set_address( lcd, LCDTEXT_ADDRESS_LINE_2 );
         lcdtext_write( lcd, buf );
     }
 

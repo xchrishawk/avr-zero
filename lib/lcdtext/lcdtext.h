@@ -28,25 +28,25 @@
  * @def     LCDTEXT_LINE_1_ADDR
  * @brief   DDRAM address for the beginning of the LCD's first line.
  */
-#define LCDTEXT_LINE_1_ADDRESS      0x00
+#define LCDTEXT_ADDRESS_LINE_1      0x00
 
 /**
  * @def     LCDTEXT_LINE_2_ADDR
  * @brief   DDRAM address for the beginning of the LCD's second line.
  */
-#define LCDTEXT_LINE_2_ADDRESS      0x40
+#define LCDTEXT_ADDRESS_LINE_2      0x40
 
 /**
  * @def     LCDTEXT_LINE_3_ADDR
  * @brief   DDRAM address for the beginning of the LCD's third line.
  */
-#define LCDTEXT_LINE_3_ADDRESS      0x14
+#define LCDTEXT_ADDRESS_LINE_3      0x14
 
 /**
  * @def     LCDTEXT_LINE_4_ADDR
  * @brief   DDRAM address for the beginning of the LCD's fourth line.
  */
-#define LCDTEXT_LINE_4_ADDRESS      0x54
+#define LCDTEXT_ADDRESS_LINE_4      0x54
 
 /**
  * @def     LCDTEXT_1602_LINE_LENGTH
@@ -147,6 +147,32 @@ typedef struct
  * @brief   Clears all text from the specified LCD and returns the cursor to the home position.
  */
 void lcdtext_clear( lcdtext_t const * lcd );
+
+/**
+ * @fn      lcdtext_go_line_1( lcdtext_t const * )
+ * @brief   Moves the cursor to the beginning of line 1.
+ */
+void lcdtext_go_line_1( lcdtext_t const * lcd );
+
+/**
+ * @fn      lcdtext_go_line_2( lcdtext_t const * )
+ * @brief   Moves the cursor to the beginning of line 2.
+ */
+void lcdtext_go_line_2( lcdtext_t const * lcd );
+
+/**
+ * @fn      lcdtext_go_line_3( lcdtext_t const * )
+ * @brief   Moves the cursor to the beginning of line 3.
+ * @note    This is only applicable to the LCD2004.
+ */
+void lcdtext_go_line_3( lcdtext_t const * lcd );
+
+/**
+ * @fn      lcdtext_go_line_4( lcdtext_t const * )
+ * @brief   Moves the cursor to the beginning of line 4.
+ * @note    This is only applicable to the LCD2004.
+ */
+void lcdtext_go_line_4( lcdtext_t const * lcd );
 
 /**
  * @fn      lcdtext_home( lcdtext_t const * )

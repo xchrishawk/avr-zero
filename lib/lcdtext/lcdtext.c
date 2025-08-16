@@ -120,6 +120,34 @@ void lcdtext_clear( lcdtext_t const * lcd )
 } /* lcdtext_clear() */
 
 
+void lcdtext_go_line_1( lcdtext_t const * lcd )
+{
+    lcdtext_set_address( lcd, LCDTEXT_ADDRESS_LINE_1 );
+
+} /* lcdtext_go_line_1() */
+
+
+void lcdtext_go_line_2( lcdtext_t const * lcd )
+{
+    lcdtext_set_address( lcd, LCDTEXT_ADDRESS_LINE_2 );
+
+} /* lcdtext_go_line_2() */
+
+
+void lcdtext_go_line_3( lcdtext_t const * lcd )
+{
+    lcdtext_set_address( lcd, LCDTEXT_ADDRESS_LINE_3 );
+
+} /* lcdtext_go_line_3() */
+
+
+void lcdtext_go_line_4( lcdtext_t const * lcd )
+{
+    lcdtext_set_address( lcd, LCDTEXT_ADDRESS_LINE_4 );
+
+} /* lcdtext_go_line_4() */
+
+
 void lcdtext_home( lcdtext_t const * lcd )
 {
     static uint8_t const COMMAND = 0x02;
@@ -264,7 +292,7 @@ void lcdtext_1602_write_lines( lcdtext_t const * lcd, char const * line1, char c
     }
     if( line2 )
     {
-        lcdtext_set_address( lcd, LCDTEXT_LINE_2_ADDRESS );
+        lcdtext_set_address( lcd, LCDTEXT_ADDRESS_LINE_2 );
         lcdtext_write( lcd, line2 );
     }
 
